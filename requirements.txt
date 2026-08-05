@@ -1,6 +1,4 @@
 Django
-djangorestframework
 python-dotenv
 google-genai
-PyPDF2
-python-docx
+pypdf
