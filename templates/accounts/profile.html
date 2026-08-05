@@ -1,0 +1,106 @@
+<!-- templates/accounts/profile.html -->
+{% extends 'base.html' %}
+
+{% block title %}My Profile — ResumeAI{% endblock %}
+{% block breadcrumb %}Profile{% endblock %}
+
+{% block content %}
+<div style="max-width: 800px; margin: 0 auto;">
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; flex-wrap: wrap; gap: 16px;">
+        <h1 style="font-size: 24px; font-weight: 700; color: var(--text-primary);">
+            <i class="fas fa-user-circle" style="color: var(--indigo-light); margin-right: 8px;"></i> My Profile
+        </h1>
+        <a href="{% url 'dashboard' %}" class="btn btn-outline btn-sm">
+            <i class="fas fa-arrow-left"></i> Back to Dashboard
+        </a>
+    </div>
+
+    <div class="card">
+        <!-- User Info Header -->
+        <div style="display: flex; align-items: center; gap: 20px; padding-bottom: 20px; border-bottom: 1px solid var(--border); flex-wrap: wrap;">
+            <div class="user-avatar" style="width: 72px; height: 72px; font-size: 28px; border-radius: var(--radius-sm);">
+                {{ user.username|first|upper }}
+            </div>
+            <div>
+                <h3 style="font-size: 20px; font-weight: 700; color: var(--text-primary); margin-bottom: 4px;">{{ user.username }}</h3>
+                <p style="color: var(--text-secondary); font-size: 14px; margin-bottom: 4px;"><i class="fas fa-envelope" style="margin-right: 6px; color: var(--indigo-light);"></i> {{ user.email }}</p>
+                <span class="tag {% if user.user_type == 'candidate' %}tag-indigo{% else %}tag-gold{% endif %}">
+                    <i class="fas fa-tag"></i> {{ user.user_type|capfirst }} Account
+                </span>
+            </div>
+        </div>
+
+        <!-- Candidate Details -->
+        {% if user.user_type == 'candidate' and profile %}
+        <div style="margin-top: 24px;">
+            <h4 style="font-weight: 600; margin-bottom: 16px; color: var(--indigo-light); font-size: 16px;">
+                <i class="fas fa-user-tie" style="margin-right: 6px;"></i> Candidate Details
+            </h4>
+            <div class="grid-2" style="gap: 16px;">
+                <div>
+                    <p style="font-size: 12px; color: var(--text-secondary); margin-bottom: 2px;">Full Name</p>
+                    <p style="font-weight: 600; color: var(--text-primary);">{{ profile.first_name }} {{ profile.last_name }}</p>
+                </div>
+                <div>
+                    <p style="font-size: 12px; color: var(--text-secondary); margin-bottom: 2px;">Title</p>
+                    <p style="font-weight: 600; color: var(--text-primary);">{{ profile.title|default:"Not set" }}</p>
+                </div>
+                <div>
+                    <p style="font-size: 12px; color: var(--text-secondary); margin-bottom: 2px;">Location</p>
+                    <p style="font-weight: 600; color: var(--text-primary);">{{ profile.location|default:"Not set" }}</p>
+                </div>
+                <div>
+                    <p style="font-size: 12px; color: var(--text-secondary); margin-bottom: 2px;">Experience</p>
+                    <p style="font-weight: 600; color: var(--text-primary);">{{ profile.experience_years|default:0 }} years</p>
+                </div>
+            </div>
+            
+            <div style="margin-top: 16px;">
+                <p style="font-size: 12px; color: var(--text-secondary); margin-bottom: 6px;">Skills</p>
+                <div>
+                    {% for skill in profile.skills %}
+                        <span class="skill-tag">{{ skill }}</span>
+                    {% empty %}
+                        <span style="color: var(--text-muted); font-size: 13px;">No skills added yet</span>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+        {% endif %}
+
+        <!-- Recruiter Details -->
+        {% if user.user_type == 'recruiter' and profile %}
+        <div style="margin-top: 24px;">
+            <h4 style="font-weight: 600; margin-bottom: 16px; color: var(--gold-light); font-size: 16px;">
+                <i class="fas fa-building" style="margin-right: 6px;"></i> Company Details
+            </h4>
+            <div class="grid-2" style="gap: 16px;">
+                <div>
+                    <p style="font-size: 12px; color: var(--text-secondary); margin-bottom: 2px;">Company</p>
+                    <p style="font-weight: 600; color: var(--text-primary);">{{ profile.company|default:"Not set" }}</p>
+                </div>
+                <div>
+                    <p style="font-size: 12px; color: var(--text-secondary); margin-bottom: 2px;">Position</p>
+                    <p style="font-weight: 600; color: var(--text-primary);">{{ profile.position|default:"Not set" }}</p>
+                </div>
+                <div>
+                    <p style="font-size: 12px; color: var(--text-secondary); margin-bottom: 2px;">Department</p>
+                    <p style="font-weight: 600; color: var(--text-primary);">{{ profile.department|default:"Not set" }}</p>
+                </div>
+                <div>
+                    <p style="font-size: 12px; color: var(--text-secondary); margin-bottom: 2px;">Verified Status</p>
+                    <p style="font-weight: 600; color: var(--text-primary);">{% if profile.verified %}<span class="tag tag-emerald">✓ Verified</span>{% else %}<span class="tag tag-gold">Pending</span>{% endif %}</p>
+                </div>
+            </div>
+            
+            {% if profile.company_description %}
+            <div style="margin-top: 16px;">
+                <p style="font-size: 12px; color: var(--text-secondary); margin-bottom: 4px;">Company Overview</p>
+                <p style="font-size: 13px; color: var(--text-primary); line-height: 1.6;">{{ profile.company_description }}</p>
+            </div>
+            {% endif %}
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

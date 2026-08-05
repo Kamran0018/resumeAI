@@ -1,0 +1,138 @@
+<!-- templates/resumes/print_preview.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Print Resume Preview – {{ resume.title }}</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <style>
+        /* ── Typography & Paper resets ── */
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: #f4f5f7;
+            font-family: 'Georgia', 'Times New Roman', Times, serif;
+            color: #333333;
+        }
+
+        /* ── Action bar (no-print) ── */
+        .action-bar {
+            background-color: #2d3748;
+            color: white;
+            padding: 12px 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-family: system-ui, -apple-system, sans-serif;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        .action-bar h3 { margin: 0; font-size: 16px; font-weight: 600; }
+        .action-bar p { margin: 0; font-size: 13px; color: #cbd5e0; }
+        .action-btn-group { display: flex; gap: 10px; }
+        .btn-print {
+            background-color: #319795;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: background 0.2s;
+        }
+        .btn-print:hover { background-color: #2b6cb0; }
+        .btn-back {
+            background-color: transparent;
+            color: #e2e8f0;
+            border: 1px solid #4a5568;
+            padding: 8px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            text-decoration: none;
+            font-size: 14px;
+            transition: all 0.2s;
+        }
+        .btn-back:hover { background-color: #4a5568; color: white; }
+
+        /* ── Styled A4 Paper Page ── */
+        .paper-container {
+            display: flex;
+            justify-content: center;
+            padding: 40px 20px;
+        }
+        .paper-page {
+            background: white;
+            width: 210mm;
+            min-height: 297mm;
+            padding: 20mm;
+            box-sizing: border-box;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+            border-radius: 4px;
+        }
+
+        /* ── Resume Formatting ── */
+        .resume-text {
+            font-size: 14px;
+            line-height: 1.6;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            font-family: 'Georgia', 'Times New Roman', serif;
+            color: #2d3748;
+        }
+
+        /* ── Print Media Rules ── */
+        @media print {
+            body {
+                background-color: white;
+                color: black;
+            }
+            .no-print {
+                display: none !important;
+            }
+            .paper-container {
+                padding: 0;
+            }
+            .paper-page {
+                box-shadow: none;
+                padding: 0;
+                margin: 0;
+                width: 100%;
+                min-height: auto;
+            }
+            @page {
+                size: A4;
+                margin: 20mm;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Top Action bar (Hidden when printing) -->
+    <div class="action-bar no-print">
+        <div>
+            <h3><i class="fas fa-file-pdf"></i> Resume Print & PDF Preview</h3>
+            <p>💡 Tip: Set margins to "Default" or "None" in the browser print dialog for best results.</p>
+        </div>
+        <div class="action-btn-group">
+            <a href="{% url 'resume_detail' resume.id %}" class="btn-back">
+                <i class="fas fa-arrow-left"></i> Back to Detail
+            </a>
+            <button class="btn-print" onclick="window.print()">
+                <i class="fas fa-print"></i> Open Print Dialog / PDF
+            </button>
+        </div>
+    </div>
+
+    <!-- Page Container -->
+    <div class="paper-container">
+        <div class="paper-page">
+            <pre class="resume-text">{{ resume.built_resume }}</pre>
+        </div>
+    </div>
+
+</body>
+</html>

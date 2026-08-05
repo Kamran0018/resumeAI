@@ -1,0 +1,66 @@
+<!-- templates/jobs/my_jobs.html -->
+{% extends 'base.html' %}
+
+{% block title %}My Jobs — ResumeAI{% endblock %}
+{% block breadcrumb %}My Jobs{% endblock %}
+
+{% block content %}
+<div style="margin-bottom: 24px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px;">
+    <div>
+        <h1 style="font-size: 24px; font-weight: 700; color: var(--text-primary);">
+            <i class="fas fa-briefcase" style="color:var(--gold-light);margin-right:8px;"></i> My Posted Jobs
+        </h1>
+        <p style="color: var(--text-secondary); font-size: 14px; margin-top: 2px;">Manage your active job listings and review candidate matches</p>
+    </div>
+    <a href="{% url 'post_job' %}" class="btn btn-gold btn-sm">
+        <i class="fas fa-plus-circle"></i> Post New Job
+    </a>
+</div>
+
+{% if jobs %}
+    <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 16px;">
+    {% for job in jobs %}
+        <div class="card" style="display: flex; flex-direction: column; justify-content: space-between; height: 100%;">
+            <div>
+                <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 10px;">
+                    <h3 style="font-size: 17px; font-weight: 600; color: var(--text-primary); margin: 0;">{{ job.title }}</h3>
+                    <span class="tag {% if job.is_active %}tag-emerald{% else %}tag-rose{% endif %}">
+                        {% if job.is_active %}Active{% else %}Closed{% endif %}
+                    </span>
+                </div>
+                
+                <p style="color: var(--text-secondary); font-size: 13px; margin-bottom: 16px;">
+                    <i class="fas fa-map-marker-alt" style="color:var(--indigo-light);"></i> {{ job.location }} &bull; {{ job.get_job_type_display }}
+                </p>
+                
+                <div style="display: flex; gap: 16px; margin-bottom: 16px; background: rgba(255,255,255,0.03); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 12px 10px;">
+                    <div style="text-align: center; flex: 1;">
+                        <div style="font-size: 20px; font-weight: 700; color: var(--indigo-light);">{{ job.applications_count }}</div>
+                        <div style="font-size: 11px; color: var(--text-secondary);">Applications</div>
+                    </div>
+                    <div style="width: 1px; background: var(--border);"></div>
+                    <div style="text-align: center; flex: 1;">
+                        <div style="font-size: 20px; font-weight: 700; color: var(--gold-light);">{{ job.views_count }}</div>
+                        <div style="font-size: 11px; color: var(--text-secondary);">Views</div>
+                    </div>
+                </div>
+            </div>
+            
+            <a href="{% url 'job_detail' job.id %}" class="btn btn-primary btn-block btn-sm">
+                View Details & Candidates <i class="fas fa-arrow-right" style="margin-left: 6px;"></i>
+            </a>
+        </div>
+    {% endfor %}
+    </div>
+{% else %}
+    <div class="card text-center" style="padding: 48px 20px;">
+        <i class="fas fa-briefcase" style="font-size: 40px; color: var(--text-muted); margin-bottom: 12px; display: block;"></i>
+        <h3 style="color: var(--text-primary); font-size: 18px; margin-bottom: 6px;">No Jobs Posted</h3>
+        <p style="color: var(--text-secondary); font-size: 14px; margin-bottom: 20px;">You haven't posted any jobs yet.</p>
+        <a href="{% url 'post_job' %}" class="btn btn-gold btn-md">
+            Post Your First Job
+        </a>
+    </div>
+{% endif %}
+
+{% endblock %}

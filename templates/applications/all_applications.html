@@ -1,0 +1,145 @@
+<!-- templates/applications/all_applications.html -->
+{% extends 'base.html' %}
+
+{% block title %}All Applications — ResumeAI{% endblock %}
+{% block breadcrumb %}Applications{% endblock %}
+
+{% block extra_css %}
+<style>
+    .page-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        flex-wrap: wrap;
+        gap: 16px;
+        margin-bottom: 24px;
+    }
+
+    .page-header h1 {
+        font-size: 24px;
+        font-weight: 700;
+        color: var(--text-primary);
+        margin-bottom: 4px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .page-header p {
+        color: var(--text-secondary);
+        font-size: 14px;
+    }
+
+    .candidate-name {
+        font-size: 14px;
+        font-weight: 600;
+        color: var(--text-primary);
+        margin-bottom: 2px;
+    }
+
+    .candidate-email {
+        font-size: 12px;
+        color: var(--text-secondary);
+    }
+
+    .job-title {
+        font-size: 14px;
+        font-weight: 600;
+        color: var(--text-primary);
+    }
+
+    .job-company {
+        font-size: 12px;
+        color: var(--indigo-light);
+    }
+
+    .status-pill {
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+        padding: 3px 10px;
+        border-radius: var(--radius-full);
+        font-size: 11px;
+        font-weight: 600;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+
+<div class="page-header">
+    <div>
+        <h1>
+            <i class="fas fa-inbox" style="color:var(--indigo-light);"></i>
+            All Candidate Applications
+        </h1>
+        <p>Review AI compatibility scores, recommendations, and manage candidate hiring status.</p>
+    </div>
+    <div>
+        <a href="{% url 'my_jobs' %}" class="btn btn-outline btn-sm">
+            <i class="fas fa-briefcase"></i> View My Jobs
+        </a>
+    </div>
+</div>
+
+{% if applications %}
+<div class="card" style="padding: 0; overflow: hidden;">
+    <div class="table-responsive">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Candidate</th>
+                    <th>Job Title</th>
+                    <th>AI Score</th>
+                    <th>Status</th>
+                    <th>Applied Date</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for app in applications %}
+                <tr>
+                    <td>
+                        <div class="candidate-name">{{ app.candidate_name }}</div>
+                        <div class="candidate-email">{{ app.candidate_email }}</div>
+                    </td>
+                    <td>
+                        <div class="job-title">{{ app.job.title }}</div>
+                        <div class="job-company"><i class="fas fa-building"></i> {{ app.job.company }}</div>
+                    </td>
+                    <td>
+                        <div style="display: flex; align-items: center; gap: 8px;">
+                            <div class="progress-track" style="width: 70px; margin: 0;">
+                                <div class="progress-fill {% if app.score >= 80 %}progress-fill-emerald{% elif app.score >= 60 %}progress-fill-violet{% else %}progress-fill-gold{% endif %}" style="width: {{ app.score }}%;"></div>
+                            </div>
+                            <span style="font-size: 13px; font-weight: 700; color: var(--text-primary);">{{ app.score|floatformat:0 }}%</span>
+                        </div>
+                    </td>
+                    <td>
+                        <span class="status-pill {% if app.status == 'shortlisted' %}tag-emerald{% elif app.status == 'rejected' %}tag-rose{% elif app.status == 'interview' %}tag-gold{% elif app.status == 'hired' %}tag-emerald{% else %}tag-indigo{% endif %}">
+                            {{ app.get_status_display }}
+                        </span>
+                    </td>
+                    <td style="font-size: 12px; color: var(--text-secondary);">
+                        {{ app.applied_at|date:"M d, Y" }}
+                    </td>
+                    <td>
+                        <a href="{% url 'application_detail' app.id %}" class="btn btn-sm btn-primary">
+                            Review <i class="fas fa-chevron-right" style="font-size: 10px;"></i>
+                        </a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% else %}
+<div class="card text-center" style="padding: 48px 20px;">
+    <i class="fas fa-inbox" style="font-size: 40px; color: var(--text-muted); margin-bottom: 12px; display: block;"></i>
+    <h3 style="color: var(--text-primary); font-size: 18px; margin-bottom: 6px;">No Applications Yet</h3>
+    <p style="color: var(--text-secondary); font-size: 14px; margin: 0;">Candidates will appear here once they apply for your posted jobs.</p>
+</div>
+{% endif %}
+
+{% endblock %}

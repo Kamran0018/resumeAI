@@ -1,0 +1,222 @@
+<!-- templates/resumes/upload.html -->
+{% extends 'base.html' %}
+{% block title %}Upload Resume — ResumeAI{% endblock %}
+
+{% block extra_css %}
+<style>
+    .upload-wrap { max-width: 540px; margin: 20px auto; }
+
+    .upload-header { text-align: center; margin-bottom: 24px; }
+    .upload-header h1 {
+        font-size: 26px; font-weight: 700;
+        color: var(--text-primary);
+        margin-bottom: 6px;
+    }
+    .upload-header p { font-size: 14px; color: var(--text-secondary); }
+
+    .upload-card {
+        background: var(--bg-card);
+        border: 1px solid var(--border);
+        border-radius: var(--radius-lg);
+        padding: 32px;
+        box-shadow: var(--shadow);
+    }
+
+    /* Drag & Drop Zone */
+    .drop-zone {
+        border: 2px dashed rgba(99, 102, 241, 0.3);
+        border-radius: var(--radius);
+        padding: 36px 20px;
+        text-align: center;
+        cursor: pointer;
+        transition: var(--transition-fast);
+        margin-bottom: 20px;
+        background: rgba(99, 102, 241, 0.03);
+        position: relative;
+    }
+
+    .drop-zone:hover, .drop-zone.drag-over {
+        border-color: var(--indigo);
+        background: rgba(99, 102, 241, 0.08);
+    }
+
+    .drop-zone input[type="file"] {
+        position: absolute; inset: 0;
+        opacity: 0; cursor: pointer;
+        width: 100%; height: 100%;
+    }
+
+    .drop-zone .dz-icon { font-size: 40px; color: var(--indigo-light); margin-bottom: 10px; display: block; }
+    .drop-zone .dz-title { font-size: 15px; font-weight: 600; color: var(--text-primary); margin-bottom: 4px; }
+    .drop-zone .dz-sub   { font-size: 12px; color: var(--text-secondary); }
+    .drop-zone .dz-file-name { font-size: 13px; font-weight: 600; color: var(--emerald-light); margin-top: 10px; display: none; }
+
+    .format-tags { display: flex; gap: 6px; justify-content: center; flex-wrap: wrap; margin-top: 10px; }
+    .format-tag { padding: 2px 8px; border-radius: var(--radius-full); font-size: 11px; font-weight: 600; background: rgba(99,102,241,0.10); color: var(--indigo-light); border: 1px solid rgba(99,102,241,0.2); }
+
+    /* Overlay */
+    #processingOverlay {
+        display: none;
+        position: fixed;
+        inset: 0;
+        background: rgba(11, 15, 25, 0.9);
+        z-index: 9999;
+        justify-content: center;
+        align-items: center;
+        flex-direction: column;
+        text-align: center;
+    }
+
+    .overlay-box {
+        background: var(--bg-card);
+        border: 1px solid var(--border-bright);
+        border-radius: var(--radius-lg);
+        padding: 40px 32px;
+        max-width: 400px;
+        width: 90%;
+        box-shadow: var(--shadow-lg);
+    }
+
+    .overlay-spinner {
+        width: 56px; height: 56px;
+        border: 3px solid rgba(255,255,255,0.1);
+        border-top-color: var(--indigo);
+        border-radius: 50%;
+        animation: spinAnim 0.8s linear infinite;
+        margin: 0 auto 20px;
+    }
+
+    @keyframes spinAnim { to { transform: rotate(360deg); } }
+
+    .overlay-title {
+        font-size: 20px; font-weight: 700;
+        color: var(--text-primary);
+        margin-bottom: 8px;
+    }
+
+    .overlay-sub { font-size: 13px; color: var(--text-secondary); line-height: 1.5; }
+
+    .overlay-steps {
+        margin-top: 20px;
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        text-align: left;
+    }
+
+    .overlay-step {
+        display: flex; align-items: center; gap: 10px;
+        font-size: 13px; color: var(--text-secondary);
+    }
+
+    .overlay-step .step-icon {
+        width: 22px; height: 22px;
+        border-radius: 50%;
+        display: flex; align-items: center; justify-content: center;
+        font-size: 11px;
+        flex-shrink: 0;
+    }
+
+    .step-icon.blue   { background: rgba(99,102,241,0.15); color: var(--indigo-light); }
+    .step-icon.purple { background: rgba(139,92,246,0.15); color: var(--violet-light); }
+    .step-icon.emerald{ background: rgba(16,185,129,0.15); color: var(--emerald-light); }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="upload-wrap">
+    <div class="upload-header">
+        <h1>Upload Your Resume</h1>
+        <p>Our Dual-AI Engine (Gemini + Grok) will analyze and coach you in seconds</p>
+    </div>
+
+    <div class="upload-card">
+        <form method="post" enctype="multipart/form-data" id="uploadForm">
+            {% csrf_token %}
+
+            <!-- Drop Zone -->
+            <div class="drop-zone" id="dropZone">
+                <input type="file" name="file" id="fileInput" accept=".pdf,.docx,.doc,.txt" required>
+                <i class="fas fa-cloud-upload-alt dz-icon"></i>
+                <div class="dz-title">Drop your resume here</div>
+                <div class="dz-sub">or click to browse files</div>
+                <div class="format-tags">
+                    <span class="format-tag">PDF</span>
+                    <span class="format-tag">DOCX</span>
+                    <span class="format-tag">DOC</span>
+                    <span class="format-tag">TXT</span>
+                </div>
+                <div class="dz-file-name" id="dzFileName"></div>
+            </div>
+
+            <div class="form-group">
+                <label><i class="fas fa-file-alt"></i> Resume Title</label>
+                <input type="text" name="title" id="resumeTitle" class="form-control" value="My Resume" required placeholder="e.g. Senior Django Developer Resume">
+            </div>
+
+            <button type="submit" class="btn btn-primary btn-block btn-lg" id="submitBtn">
+                <i class="fas fa-rocket"></i> Upload &amp; Analyze with AI
+            </button>
+
+            <a href="{% url 'resume_list' %}" class="btn btn-ghost btn-block" style="margin-top:10px;" id="upload-cancel-btn">
+                <i class="fas fa-arrow-left"></i> Cancel
+            </a>
+        </form>
+    </div>
+</div>
+
+<!-- Processing Overlay -->
+<div id="processingOverlay">
+    <div class="overlay-box">
+        <div class="overlay-spinner"></div>
+        <div class="overlay-title">Analyzing Resume...</div>
+        <p class="overlay-sub">Please wait while our Dual-AI Engine scores your resume.</p>
+        <div class="overlay-steps">
+            <div class="overlay-step">
+                <span class="step-icon blue"><i class="fas fa-robot"></i></span>
+                Gemini extracting skills &amp; experience...
+            </div>
+            <div class="overlay-step">
+                <span class="step-icon purple"><i class="fas fa-microchip"></i></span>
+                Grok evaluating ATS compatibility...
+            </div>
+            <div class="overlay-step">
+                <span class="step-icon emerald"><i class="fas fa-layer-group"></i></span>
+                Computing combined AI Score...
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    const dropZone = document.getElementById('dropZone');
+    const fileInput = document.getElementById('fileInput');
+    const dzFileName = document.getElementById('dzFileName');
+
+    fileInput.addEventListener('change', () => {
+        if (fileInput.files.length) {
+            dzFileName.textContent = '✓ ' + fileInput.files[0].name;
+            dzFileName.style.display = 'block';
+            dropZone.style.borderColor = 'var(--emerald)';
+            dropZone.style.background = 'rgba(16,185,129,0.06)';
+        }
+    });
+
+    dropZone.addEventListener('dragover', (e) => { e.preventDefault(); dropZone.classList.add('drag-over'); });
+    dropZone.addEventListener('dragleave', () => dropZone.classList.remove('drag-over'));
+    dropZone.addEventListener('drop', (e) => {
+        e.preventDefault();
+        dropZone.classList.remove('drag-over');
+        if (e.dataTransfer.files.length) {
+            fileInput.files = e.dataTransfer.files;
+            fileInput.dispatchEvent(new Event('change'));
+        }
+    });
+
+    document.getElementById('uploadForm').addEventListener('submit', () => {
+        document.getElementById('processingOverlay').style.display = 'flex';
+    });
+</script>
+{% endblock %}

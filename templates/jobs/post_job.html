@@ -1,0 +1,185 @@
+<!-- templates/jobs/post_job.html -->
+{% extends 'base.html' %}
+
+{% block title %}Post a New Job — ResumeAI{% endblock %}
+{% block breadcrumb %}Post Job{% endblock %}
+
+{% block content %}
+<div style="max-width: 840px; margin: 0 auto;">
+    <div style="margin-bottom: 24px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px;">
+        <div>
+            <h1 style="font-size: 24px; font-weight: 700; color: var(--text-primary);">
+                <i class="fas fa-plus-circle" style="color:var(--gold-light);margin-right:8px;"></i> Post a New Job
+            </h1>
+            <p style="font-size:13px;color:var(--text-secondary);margin-top:2px;">Create a job listing and evaluate candidates with AI matching.</p>
+        </div>
+        <a href="{% url 'dashboard' %}" class="btn btn-outline btn-sm">
+            <i class="fas fa-arrow-left"></i> Back to Dashboard
+        </a>
+    </div>
+
+    <div class="card">
+        <!-- JD Auto-filler Upload Box -->
+        <div style="background: rgba(99,102,241,0.06); border: 1px dashed rgba(99,102,241,0.3); padding: 20px; border-radius: var(--radius); text-align: center; margin-bottom: 24px;">
+            <h4 style="color: var(--indigo-light); font-weight:600; margin-bottom: 4px; font-size:15px;">
+                <i class="fas fa-magic"></i> Auto-Fill Job Form with AI
+            </h4>
+            <p style="color: var(--text-secondary); font-size: 13px; margin-bottom: 12px;">
+                Upload a Job Description document (PDF, Word, or Text) to automatically extract fields.
+            </p>
+            <input type="file" id="jdFileInput" accept=".pdf,.docx,.doc,.txt" style="display:none;">
+            <button type="button" class="btn btn-outline btn-sm" onclick="document.getElementById('jdFileInput').click()">
+                <i class="fas fa-file-upload"></i> Choose JD File
+            </button>
+            <div id="jdUploadStatus" style="font-size:12px; color:var(--text-secondary); margin-top:8px; font-weight: 500;"></div>
+        </div>
+
+        <form method="post" id="postJobForm">
+            {% csrf_token %}
+            
+            <div class="grid-2">
+                <div class="form-group">
+                    <label>Job Title *</label>
+                    <input type="text" name="title" class="form-control" required placeholder="e.g. Senior Software Engineer">
+                </div>
+                <div class="form-group">
+                    <label>Company *</label>
+                    <input type="text" name="company" class="form-control" required placeholder="e.g. Acme Corp">
+                </div>
+            </div>
+            
+            <div class="grid-3">
+                <div class="form-group">
+                    <label>Location *</label>
+                    <input type="text" name="location" class="form-control" required placeholder="e.g. New York, NY or Remote">
+                </div>
+                <div class="form-group">
+                    <label>Job Type *</label>
+                    <select name="job_type" class="form-control" required>
+                        <option value="full_time">Full Time</option>
+                        <option value="part_time">Part Time</option>
+                        <option value="contract">Contract</option>
+                        <option value="internship">Internship</option>
+                        <option value="remote">Remote</option>
+                        <option value="hybrid">Hybrid</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Experience Level *</label>
+                    <select name="experience_level" class="form-control" required>
+                        <option value="entry">Entry Level (0-2 years)</option>
+                        <option value="junior">Junior (2-4 years)</option>
+                        <option value="mid" selected>Mid Level (4-7 years)</option>
+                        <option value="senior">Senior (7-10 years)</option>
+                        <option value="lead">Lead (10+ years)</option>
+                        <option value="manager">Manager (10+ years)</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>Job Description *</label>
+                <textarea name="description" class="form-control" rows="5" required placeholder="Describe the role and responsibilities..."></textarea>
+            </div>
+            
+            <div class="form-group">
+                <label>Requirements *</label>
+                <textarea name="requirements" class="form-control" rows="5" required placeholder="What are the required qualifications?"></textarea>
+            </div>
+            
+            <div class="form-group">
+                <label>Responsibilities</label>
+                <textarea name="responsibilities" class="form-control" rows="3" placeholder="What will the day-to-day look like?"></textarea>
+            </div>
+
+            <div class="form-group">
+                <label>Benefits</label>
+                <textarea name="benefits" class="form-control" rows="3" placeholder="What benefits do you offer?"></textarea>
+            </div>
+            
+            <div class="grid-2">
+                <div class="form-group">
+                    <label>Required Skills (Comma separated) *</label>
+                    <input type="text" name="required_skills" class="form-control" required placeholder="e.g. Python, Django, SQL">
+                </div>
+                <div class="form-group">
+                    <label>Preferred Skills (Comma separated)</label>
+                    <input type="text" name="preferred_skills" class="form-control" placeholder="e.g. AWS, Docker, React">
+                </div>
+            </div>
+
+            <div class="grid-2">
+                <div class="form-group">
+                    <label>Minimum Salary (USD)</label>
+                    <input type="number" name="salary_min" class="form-control" placeholder="e.g. 80000">
+                </div>
+                <div class="form-group">
+                    <label>Maximum Salary (USD)</label>
+                    <input type="number" name="salary_max" class="form-control" placeholder="e.g. 120000">
+                </div>
+            </div>
+
+            <div style="margin-top: 24px;">
+                <button type="submit" class="btn btn-gold btn-lg btn-block">
+                    <i class="fas fa-paper-plane"></i> Post Job Listing
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+document.getElementById('jdFileInput').addEventListener('change', function(e) {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    const statusDiv = document.getElementById('jdUploadStatus');
+    statusDiv.style.color = 'var(--indigo-light)';
+    statusDiv.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Reading JD document and running AI analysis...';
+
+    const formData = new FormData();
+    formData.append('file', file);
+
+    const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+
+    fetch('{% url "parse_jd" %}', {
+        method: 'POST',
+        headers: {
+            'X-CSRFToken': csrfToken
+        },
+        body: formData
+    })
+    .then(response => response.json())
+    .then(result => {
+        if (result.success && result.data) {
+            const data = result.data;
+            
+            if (data.title) document.querySelector('[name="title"]').value = data.title;
+            if (data.company) document.querySelector('[name="company"]').value = data.company;
+            if (data.location) document.querySelector('[name="location"]').value = data.location;
+            if (data.job_type) document.querySelector('[name="job_type"]').value = data.job_type;
+            if (data.experience_level) document.querySelector('[name="experience_level"]').value = data.experience_level;
+            if (data.description) document.querySelector('[name="description"]').value = data.description;
+            if (data.requirements) document.querySelector('[name="requirements"]').value = data.requirements;
+            if (data.responsibilities) document.querySelector('[name="responsibilities"]').value = data.responsibilities;
+            if (data.benefits) document.querySelector('[name="benefits"]').value = data.benefits;
+            if (data.required_skills) document.querySelector('[name="required_skills"]').value = data.required_skills;
+            if (data.preferred_skills) document.querySelector('[name="preferred_skills"]').value = data.preferred_skills;
+            if (data.salary_min) document.querySelector('[name="salary_min"]').value = data.salary_min;
+            if (data.salary_max) document.querySelector('[name="salary_max"]').value = data.salary_max;
+
+            statusDiv.style.color = 'var(--emerald-light)';
+            statusDiv.innerHTML = '✓ AI successfully extracted all fields! Please review them below before posting.';
+        } else {
+            statusDiv.style.color = 'var(--rose-light)';
+            statusDiv.innerHTML = '✕ Extraction failed: ' + (result.error || 'Unknown error');
+        }
+    })
+    .catch(error => {
+        console.error(error);
+        statusDiv.style.color = 'var(--rose-light)';
+        statusDiv.innerHTML = '✕ Network error during JD analysis.';
+    });
+});
+</script>
+{% endblock %}

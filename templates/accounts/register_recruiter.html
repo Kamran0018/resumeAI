@@ -1,0 +1,120 @@
+<!-- templates/accounts/register_recruiter.html -->
+{% extends 'base.html' %}
+{% block title %}Recruiter Registration — ResumeAI{% endblock %}
+
+{% block extra_css %}
+<style>
+    body > .container { display: flex; align-items: center; justify-content: center; padding-top: 30px; padding-bottom: 30px; }
+
+    .auth-wrap { width: 100%; max-width: 500px; margin: 0 auto; }
+
+    .auth-card {
+        background: var(--bg-card);
+        border: 1px solid var(--border);
+        border-radius: var(--radius-lg);
+        padding: 36px 32px;
+        box-shadow: var(--shadow);
+    }
+
+    .auth-icon {
+        width: 56px; height: 56px;
+        border-radius: var(--radius-sm);
+        background: rgba(245, 158, 11, 0.1);
+        border: 1px solid rgba(245, 158, 11, 0.2);
+        display: flex; align-items: center; justify-content: center;
+        font-size: 24px;
+        color: var(--gold-light);
+        margin: 0 auto 16px;
+    }
+
+    .auth-title {
+        font-size: 24px; font-weight: 700;
+        color: var(--text-primary);
+        text-align: center; margin-bottom: 4px;
+    }
+
+    .auth-sub { font-size: 13px; color: var(--text-secondary); text-align: center; margin-bottom: 24px; }
+
+    .name-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+
+    .auth-footer { text-align: center; margin-top: 20px; padding-top: 20px; border-top: 1px solid var(--border); }
+    .auth-footer p { font-size: 13px; color: var(--text-secondary); margin-bottom: 6px; }
+    .auth-footer a { color: var(--gold-light); font-weight: 600; text-decoration: none; }
+    .auth-footer a:hover { text-decoration: underline; }
+    .auth-footer a.alt { color: var(--indigo-light); }
+
+    .back-link { display: inline-flex; align-items: center; gap: 6px; font-size: 13px; color: var(--text-muted); text-decoration: none; margin-top: 8px; }
+    .back-link:hover { color: var(--text-primary); }
+
+    @media (max-width: 480px) {
+        .auth-card { padding: 28px 20px; }
+        .name-grid { grid-template-columns: 1fr; }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="auth-wrap">
+    <div class="auth-card">
+        <div class="auth-icon"><i class="fas fa-building"></i></div>
+        <div class="auth-title">Recruiter Registration</div>
+        <p class="auth-sub">Create your employer account to post jobs &amp; screen with AI</p>
+
+        <form method="post" id="recruiter-register-form">
+            {% csrf_token %}
+
+            <div class="form-group">
+                <label><i class="fas fa-envelope"></i> Email Address</label>
+                <input type="email" name="email" id="rec-reg-email" class="form-control" placeholder="you@company.com" required autocomplete="email">
+            </div>
+
+            <div class="form-group">
+                <label><i class="fas fa-at"></i> Username</label>
+                <input type="text" name="username" id="rec-reg-username" class="form-control" placeholder="Choose a username" required autocomplete="username">
+            </div>
+
+            <div class="name-grid">
+                <div class="form-group">
+                    <label><i class="fas fa-user"></i> First Name</label>
+                    <input type="text" name="first_name" id="rec-reg-first" class="form-control" placeholder="First name" autocomplete="given-name">
+                </div>
+                <div class="form-group">
+                    <label><i class="fas fa-user"></i> Last Name</label>
+                    <input type="text" name="last_name" id="rec-reg-last" class="form-control" placeholder="Last name" autocomplete="family-name">
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label><i class="fas fa-building"></i> Company Name</label>
+                <input type="text" name="company_name" id="rec-reg-company" class="form-control" placeholder="e.g. Acme Corp" autocomplete="organization">
+            </div>
+
+            <div class="form-group">
+                <label><i class="fas fa-lock"></i> Password</label>
+                <input type="password" name="password" id="rec-reg-pass" class="form-control" placeholder="••••••••" required autocomplete="new-password">
+            </div>
+
+            <div class="form-group">
+                <label><i class="fas fa-lock"></i> Confirm Password</label>
+                <input type="password" name="password_confirm" id="rec-reg-pass2" class="form-control" placeholder="••••••••" required autocomplete="new-password">
+            </div>
+
+            <button type="submit" class="btn btn-gold btn-block btn-lg" id="recruiter-register-btn">
+                <i class="fas fa-user-plus"></i> Create Recruiter Account
+            </button>
+        </form>
+
+        <div class="auth-footer">
+            <p>Already have a recruiter account?</p>
+            <a href="{% url 'login_recruiter' %}" id="to-rec-login">Sign In →</a>
+            <div style="margin-top:12px;">
+                <span style="font-size:12px;color:var(--text-muted);">Looking for a job?</span><br>
+                <a href="{% url 'register_candidate' %}" class="alt" style="font-size:13px;" id="to-cand-reg">Register as Candidate instead</a>
+            </div>
+            <div style="margin-top:16px;">
+                <a href="{% url 'home' %}" class="back-link"><i class="fas fa-arrow-left"></i> Back to Home</a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

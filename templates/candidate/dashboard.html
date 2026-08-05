@@ -1,0 +1,264 @@
+<!-- templates/candidate/dashboard.html -->
+{% extends 'base.html' %}
+{% block title %}Candidate Dashboard — ResumeAI{% endblock %}
+{% block breadcrumb %}Dashboard{% endblock %}
+
+{% block extra_css %}
+<style>
+    .page-header {
+        margin-bottom: 24px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        flex-wrap: wrap;
+        gap: 16px;
+    }
+    .page-header h1 {
+        font-size: 26px;
+        font-weight: 700;
+        color: var(--text-primary);
+        margin-bottom: 4px;
+    }
+
+    .quick-actions {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+        margin: 20px 0 28px;
+    }
+
+    .tip-banner {
+        background: var(--bg-card);
+        border: 1px solid var(--border);
+        border-radius: var(--radius-lg);
+        padding: 20px 24px;
+        margin-top: 28px;
+        display: flex;
+        align-items: flex-start;
+        gap: 16px;
+    }
+    .tip-banner .tip-icon {
+        width: 40px; height: 40px;
+        border-radius: var(--radius-sm);
+        background: rgba(99,102,241,0.1);
+        border: 1px solid rgba(99,102,241,0.2);
+        display: flex; align-items: center; justify-content: center;
+        font-size: 18px;
+        color: var(--indigo-light);
+        flex-shrink: 0;
+    }
+    .tip-list { list-style: none; padding: 0; margin: 0; }
+    .tip-list li {
+        font-size: 13px;
+        color: var(--text-secondary);
+        padding: 3px 0;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+    .tip-list li i { color: var(--emerald-light); font-size: 12px; }
+
+    .section-row {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 16px;
+    }
+    .section-row h3 {
+        font-size: 18px;
+        font-weight: 700;
+        color: var(--text-primary);
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+    .section-row a { font-size: 13px; color: var(--indigo-light); text-decoration: none; font-weight: 600; }
+    .section-row a:hover { text-decoration: underline; }
+</style>
+{% endblock %}
+
+{% block content %}
+
+<!-- Header -->
+<div class="page-header">
+    <div>
+        <h1>👋 Welcome back, {{ user.get_full_name|default:user.username }}!</h1>
+        <p style="font-size:14px;color:var(--text-secondary);margin-top:4px;">
+            <span class="tag tag-indigo">
+                <i class="fas fa-user-tag"></i> Candidate Profile
+            </span>
+            &nbsp;&bull;&nbsp; Here's your AI career intelligence dashboard
+        </p>
+    </div>
+    <div>
+        <a href="{% url 'upload_resume' %}" class="btn btn-primary btn-sm">
+            <i class="fas fa-plus"></i> New Resume
+        </a>
+    </div>
+</div>
+
+<!-- Stats Grid -->
+<div class="stats-grid">
+    <div class="stat-card">
+        <span class="icon"><i class="fas fa-file-alt"></i></span>
+        <div class="number">{{ total_resumes|default:0 }}</div>
+        <div class="label">Total Resumes</div>
+    </div>
+    <div class="stat-card">
+        <span class="icon"><i class="fas fa-briefcase"></i></span>
+        <div class="number">{{ total_applications|default:0 }}</div>
+        <div class="label">Applications</div>
+    </div>
+    <div class="stat-card">
+        <span class="icon"><i class="fas fa-star"></i></span>
+        <div class="number" style="color:var(--emerald-light);">{{ shortlisted|default:0 }}</div>
+        <div class="label">Shortlisted</div>
+    </div>
+    <div class="stat-card">
+        <span class="icon"><i class="fas fa-bullseye"></i></span>
+        <div class="number" style="color:var(--gold-light);">{{ interviewing|default:0 }}</div>
+        <div class="label">Interviews</div>
+    </div>
+</div>
+
+<!-- Quick Actions -->
+<div class="quick-actions">
+    <a href="{% url 'upload_resume' %}" class="btn btn-primary" id="dash-upload-btn">
+        <i class="fas fa-upload"></i> Upload Resume
+    </a>
+    <a href="{% url 'all_jobs' %}" class="btn btn-emerald" id="dash-browse-btn">
+        <i class="fas fa-search"></i> Browse Jobs
+    </a>
+    <a href="{% url 'my_applications' %}" class="btn btn-gold" id="dash-apps-btn">
+        <i class="fas fa-list"></i> My Applications
+    </a>
+    <a href="{% url 'profile' %}" class="btn btn-ghost" id="dash-profile-btn">
+        <i class="fas fa-user-edit"></i> Edit Profile
+    </a>
+</div>
+
+<!-- AI Resume Suggestions -->
+<div style="margin-top: 32px;">
+    <div class="section-row">
+        <h3><i class="fas fa-robot" style="color:var(--indigo-light);"></i> AI Resume Coach</h3>
+        <a href="{% url 'resume_list' %}">View All Resumes →</a>
+    </div>
+
+    {% if resumes %}
+        {% for resume in resumes|slice:":3" %}
+        <div class="resume-card">
+            <div class="info" style="flex:1;min-width:0;">
+                <h4>{{ resume.title }}</h4>
+                <div class="meta" style="display:flex;flex-wrap:wrap;gap:12px;margin-top:4px;">
+                    <span><i class="fas fa-calendar-alt"></i> {{ resume.created_at|date:"M d, Y" }}</span>
+                    <span><i class="fas fa-code"></i> {{ resume.skills|length }} skills</span>
+                    {% if resume.resume_score %}
+                    <span style="color:var(--indigo-light);font-weight:700;">
+                        <i class="fas fa-robot"></i> Score: {{ resume.resume_score|floatformat:0 }}/100
+                    </span>
+                    {% endif %}
+                    {% if resume.ats_score %}
+                    <span style="color:var(--emerald-light);font-weight:700;">
+                        <i class="fas fa-file-invoice"></i> ATS: {{ resume.ats_score|floatformat:0 }}/100
+                    </span>
+                    {% endif %}
+                </div>
+
+                {% if resume.resume_score %}
+                <div class="progress-track" style="margin-top:10px;max-width:280px;">
+                    <div class="progress-fill" data-width="{{ resume.resume_score|floatformat:0 }}" style="width:0%;"></div>
+                </div>
+                {% endif %}
+
+                {% if resume.skills %}
+                <div style="margin-top:8px;">
+                    {% for skill in resume.skills|slice:":6" %}
+                    <span class="skill-tag">{{ skill }}</span>
+                    {% endfor %}
+                    {% if resume.skills|length > 6 %}
+                    <span class="skill-tag" style="background:rgba(255,255,255,0.04);color:var(--text-muted);">+{{ resume.skills|length|add:"-6" }} more</span>
+                    {% endif %}
+                </div>
+                {% endif %}
+            </div>
+            <div class="actions">
+                <a href="{% url 'resume_detail' resume.id %}" class="btn btn-sm btn-primary" id="resume-view-{{ resume.id }}">
+                    <i class="fas fa-eye"></i> View AI Analysis
+                </a>
+                <a href="{% url 'delete_resume' resume.id %}" class="btn btn-sm btn-danger"
+                   onclick="return confirm('Delete this resume?')" id="resume-del-{{ resume.id }}">
+                    <i class="fas fa-trash"></i>
+                </a>
+            </div>
+        </div>
+        {% endfor %}
+    {% else %}
+    <div class="card text-center" style="padding: 40px 20px;">
+        <i class="fas fa-file-upload" style="font-size: 36px; color: var(--text-muted); margin-bottom: 10px; display: block;"></i>
+        <p style="color:var(--text-secondary);font-size:14px;margin-bottom:16px;">No resumes uploaded yet. Let AI analyze your resume!</p>
+        <a href="{% url 'upload_resume' %}" class="btn btn-emerald btn-sm" id="dash-first-upload-btn">
+            <i class="fas fa-upload"></i> Upload Your First Resume
+        </a>
+    </div>
+    {% endif %}
+</div>
+
+<!-- Recent Applications -->
+<div style="margin-top: 36px;">
+    <div class="section-row">
+        <h3><i class="fas fa-paper-plane" style="color:var(--indigo-light);"></i> Recent Applications</h3>
+        <a href="{% url 'my_applications' %}">View All →</a>
+    </div>
+
+    {% if recent_applications %}
+        {% for app in recent_applications %}
+        <div class="resume-card">
+            <div class="info" style="flex:1;">
+                <h4>{{ app.job.title }}</h4>
+                <div class="meta" style="display:flex;flex-wrap:wrap;gap:12px;margin-top:4px;">
+                    <span><i class="fas fa-building"></i> {{ app.job.company }}</span>
+                    <span><i class="fas fa-calendar-alt"></i> {{ app.applied_at|date:"M d, Y" }}</span>
+                    {% if app.score %}
+                    <span style="color:var(--indigo-light);font-weight:700;">
+                        <i class="fas fa-robot"></i> Match: {{ app.score|floatformat:0 }}%
+                    </span>
+                    {% endif %}
+                </div>
+            </div>
+            <div style="display:flex;align-items:center;gap:10px;">
+                <span class="tag {% if app.status == 'shortlisted' %}tag-emerald{% elif app.status == 'rejected' %}tag-rose{% elif app.status == 'interview' %}tag-gold{% else %}tag-indigo{% endif %}">
+                    {{ app.get_status_display }}
+                </span>
+                <a href="{% url 'application_detail' app.id %}" class="btn btn-sm btn-outline">
+                    View
+                </a>
+            </div>
+        </div>
+        {% endfor %}
+    {% else %}
+    <div class="card text-center" style="padding: 40px 20px;">
+        <i class="fas fa-inbox" style="font-size: 36px; color: var(--text-muted); margin-bottom: 10px; display: block;"></i>
+        <p style="color:var(--text-secondary);font-size:14px;margin-bottom:16px;">You haven't applied to any jobs yet.</p>
+        <a href="{% url 'all_jobs' %}" class="btn btn-primary btn-sm">
+            <i class="fas fa-search"></i> Find Jobs
+        </a>
+    </div>
+    {% endif %}
+</div>
+
+<!-- AI Coaching Tip Banner -->
+<div class="tip-banner">
+    <div class="tip-icon"><i class="fas fa-lightbulb"></i></div>
+    <div>
+        <h4 style="font-size:15px;font-weight:700;color:var(--text-primary);margin-bottom:6px;">
+            💡 Quick AI Tip for Job Seekers
+        </h4>
+        <ul class="tip-list">
+            <li><i class="fas fa-check-circle"></i> Use action verbs and quantify achievements (e.g. "Increased sales by 35%").</li>
+            <li><i class="fas fa-check-circle"></i> Tailor keywords to match target job descriptions before submitting.</li>
+            <li><i class="fas fa-check-circle"></i> Run your resume through our Dual-AI Screener to verify your ATS rating.</li>
+        </ul>
+    </div>
+</div>
+
+{% endblock %}
