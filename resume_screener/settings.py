@@ -96,6 +96,12 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 # Custom User Model
 AUTH_USER_MODEL = 'accounts.User'
 
+# Authentication Backends (allows login with username or email)
+AUTHENTICATION_BACKENDS = [
+    'accounts.backends.EmailOrUsernameBackend',
+    'django.contrib.auth.backends.ModelBackend',
+]
+
 # Login/Logout URLs
 LOGIN_URL = 'login_candidate'
 LOGIN_REDIRECT_URL = 'dashboard'
@@ -111,4 +117,4 @@ SESSION_EXPIRE_AT_BROWSER_CLOSE = False # Session persists after browser close
 
 # ===== CSRF FAILURE =====
 # Instead of showing a 403 page, redirect to login with a helpful message
-CSRF_FAILURE_VIEW = 'accounts.views.csrf_failure'
+CSRF_FAILURE_VIEW = 'accounts.views.csrf_failure'

@@ -17,8 +17,8 @@ class User(AbstractUser):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     
-    USERNAME_FIELD = 'email'
-    REQUIRED_FIELDS = ['username', 'user_type']
+    USERNAME_FIELD = 'username'
+    REQUIRED_FIELDS = ['email']
     
     def __str__(self):
         return f"{self.email} ({self.user_type})"

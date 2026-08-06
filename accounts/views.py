@@ -125,24 +125,24 @@ def login_candidate(request):
         return redirect('dashboard')
 
     if request.method == 'POST':
-        email = request.POST.get('email')
+        login_input = (request.POST.get('username') or request.POST.get('email') or '').strip()
         password = request.POST.get('password')
         
-        if not email or not password:
-            messages.error(request, 'Please fill all fields')
+        if not login_input or not password:
+            messages.error(request, 'Please fill all required fields.')
             return render(request, 'accounts/login_candidate.html')
         
-        user = authenticate(request, username=email, password=password)
+        user = authenticate(request, username=login_input, password=password)
         
         if user is not None:
             if user.user_type != 'candidate':
-                messages.error(request, 'This account is not a candidate account')
+                messages.error(request, 'This account is not a candidate account.')
                 return render(request, 'accounts/login_candidate.html')
             login(request, user)
             messages.success(request, f'Welcome back, {user.username}!')
             return redirect('dashboard')
         else:
-            messages.error(request, 'Invalid email or password')
+            messages.error(request, 'Invalid username/email or password.')
             return render(request, 'accounts/login_candidate.html')
     
     return render(request, 'accounts/login_candidate.html')
@@ -153,24 +153,24 @@ def login_recruiter(request):
         return redirect('dashboard')
 
     if request.method == 'POST':
-        email = request.POST.get('email')
+        login_input = (request.POST.get('username') or request.POST.get('email') or '').strip()
         password = request.POST.get('password')
         
-        if not email or not password:
-            messages.error(request, 'Please fill all fields')
+        if not login_input or not password:
+            messages.error(request, 'Please fill all required fields.')
             return render(request, 'accounts/login_recruiter.html')
         
-        user = authenticate(request, username=email, password=password)
+        user = authenticate(request, username=login_input, password=password)
         
         if user is not None:
             if user.user_type != 'recruiter':
-                messages.error(request, 'This account is not a recruiter account')
+                messages.error(request, 'This account is not a recruiter account.')
                 return render(request, 'accounts/login_recruiter.html')
             login(request, user)
             messages.success(request, f'Welcome back, {user.username}!')
             return redirect('dashboard')
         else:
-            messages.error(request, 'Invalid email or password')
+            messages.error(request, 'Invalid username/email or password.')
             return render(request, 'accounts/login_recruiter.html')
     
     return render(request, 'accounts/login_recruiter.html')
@@ -206,4 +206,4 @@ def csrf_failure(request, reason=''):
     else:
         # Not logged in — send to login with a helpful notice
         messages.warning(request, 'Your session expired. Please log in again.')
-        return redirect('login_candidate')
+        return redirect('login_candidate')

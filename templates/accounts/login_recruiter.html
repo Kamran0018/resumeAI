@@ -4,9 +4,18 @@
 
 {% block extra_css %}
 <style>
-    body > .container { display: flex; align-items: center; justify-content: center; min-height: calc(100vh - 80px - 80px); }
+    body>.container {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        min-height: calc(100vh - 80px - 80px);
+    }
 
-    .auth-wrap { width: 100%; max-width: 440px; margin: 20px auto; }
+    .auth-wrap {
+        width: 100%;
+        max-width: 440px;
+        margin: 20px auto;
+    }
 
     .auth-card {
         background: var(--bg-card);
@@ -17,32 +26,74 @@
     }
 
     .auth-icon {
-        width: 56px; height: 56px;
+        width: 56px;
+        height: 56px;
         border-radius: var(--radius-sm);
         background: rgba(245, 158, 11, 0.1);
         border: 1px solid rgba(245, 158, 11, 0.2);
-        display: flex; align-items: center; justify-content: center;
+        display: flex;
+        align-items: center;
+        justify-content: center;
         font-size: 24px;
         color: var(--gold-light);
         margin: 0 auto 16px;
     }
 
     .auth-title {
-        font-size: 24px; font-weight: 700;
+        font-size: 24px;
+        font-weight: 700;
         color: var(--text-primary);
-        text-align: center; margin-bottom: 4px;
+        text-align: center;
+        margin-bottom: 4px;
     }
 
-    .auth-sub { font-size: 13px; color: var(--text-secondary); text-align: center; margin-bottom: 24px; }
+    .auth-sub {
+        font-size: 13px;
+        color: var(--text-secondary);
+        text-align: center;
+        margin-bottom: 24px;
+    }
 
-    .auth-footer { text-align: center; margin-top: 20px; padding-top: 20px; border-top: 1px solid var(--border); }
-    .auth-footer p { font-size: 13px; color: var(--text-secondary); margin-bottom: 6px; }
-    .auth-footer a { color: var(--gold-light); font-weight: 600; text-decoration: none; }
-    .auth-footer a:hover { text-decoration: underline; }
-    .auth-footer a.alt { color: var(--indigo-light); }
+    .auth-footer {
+        text-align: center;
+        margin-top: 20px;
+        padding-top: 20px;
+        border-top: 1px solid var(--border);
+    }
 
-    .back-link { display: inline-flex; align-items: center; gap: 6px; font-size: 13px; color: var(--text-muted); text-decoration: none; margin-top: 8px; }
-    .back-link:hover { color: var(--text-primary); }
+    .auth-footer p {
+        font-size: 13px;
+        color: var(--text-secondary);
+        margin-bottom: 6px;
+    }
+
+    .auth-footer a {
+        color: var(--gold-light);
+        font-weight: 600;
+        text-decoration: none;
+    }
+
+    .auth-footer a:hover {
+        text-decoration: underline;
+    }
+
+    .auth-footer a.alt {
+        color: var(--indigo-light);
+    }
+
+    .back-link {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        font-size: 13px;
+        color: var(--text-muted);
+        text-decoration: none;
+        margin-top: 8px;
+    }
+
+    .back-link:hover {
+        color: var(--text-primary);
+    }
 </style>
 {% endblock %}
 
@@ -57,13 +108,15 @@
             {% csrf_token %}
 
             <div class="form-group">
-                <label><i class="fas fa-envelope"></i> Email Address</label>
-                <input type="email" name="email" id="rec-login-email" class="form-control" placeholder="your@company.com" required autocomplete="email">
+                <label><i class="fas fa-user"></i> Username or Email</label>
+                <input type="text" name="username" id="rec-login-username" class="form-control"
+                    placeholder="Username or email address" required autocomplete="username">
             </div>
 
             <div class="form-group">
                 <label><i class="fas fa-lock"></i> Password</label>
-                <input type="password" name="password" id="rec-login-password" class="form-control" placeholder="••••••••" required autocomplete="current-password">
+                <input type="password" name="password" id="rec-login-password" class="form-control"
+                    placeholder="••••••••" required autocomplete="current-password">
             </div>
 
             <button type="submit" class="btn btn-gold btn-block btn-lg" id="recruiter-login-btn">
@@ -76,7 +129,8 @@
             <a href="{% url 'register_recruiter' %}" id="to-rec-reg">Register as Recruiter →</a>
             <div style="margin-top:12px;">
                 <span style="font-size:12px;color:var(--text-muted);">Looking for a job?</span><br>
-                <a href="{% url 'login_candidate' %}" class="alt" style="font-size:13px;" id="to-cand-login">Switch to Candidate Login</a>
+                <a href="{% url 'login_candidate' %}" class="alt" style="font-size:13px;" id="to-cand-login">Switch to
+                    Candidate Login</a>
             </div>
             <div style="margin-top:16px;">
                 <a href="{% url 'home' %}" class="back-link"><i class="fas fa-arrow-left"></i> Back to Home</a>
