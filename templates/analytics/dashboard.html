@@ -21,6 +21,12 @@
         .col-8, .col-6, .col-4 { grid-column: span 12; }
     }
 
+    @media (max-width: 600px) {
+        .chart-card { padding: 14px 12px; }
+        .chart-container { min-height: 200px; }
+        .analytics-grid { gap: 14px; margin-top: 14px; }
+    }
+
     .chart-card {
         background: var(--bg-card);
         border: 1px solid var(--border);
@@ -41,6 +47,9 @@
         position: relative;
         width: 100%;
         min-height: 260px;
+    }
+    .chart-container canvas {
+        max-width: 100% !important;
     }
 
     .leaderboard-table {

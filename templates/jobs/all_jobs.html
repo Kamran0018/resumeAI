@@ -4,6 +4,21 @@
 {% block title %}Browse Jobs — ResumeAI{% endblock %}
 {% block breadcrumb %}Browse Jobs{% endblock %}
 
+{% block extra_css %}
+<style>
+    @media (max-width: 550px) {
+        .job-card-actions {
+            width: 100% !important;
+            flex-direction: row !important;
+        }
+        .job-card-actions .btn {
+            flex: 1;
+            text-align: center;
+        }
+    }
+</style>
+{% endblock %}
+
 {% block content %}
 <div style="margin-bottom: 24px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px;">
     <div>
@@ -50,7 +65,7 @@
                 {% endif %}
             </div>
             
-            <div style="display: flex; flex-direction: column; gap: 8px; min-width: 130px;">
+            <div class="job-card-actions" style="display: flex; flex-direction: column; gap: 8px; min-width: 130px;">
                 <a href="{% url 'job_detail' job.id %}" class="btn btn-outline btn-sm">
                     View Details
                 </a>

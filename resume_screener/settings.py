@@ -13,7 +13,7 @@ GEMINI_API_KEY = os.getenv('GEMINI_API_KEY')
 GROK_API_KEY = os.getenv('GROK_API_KEY', '')  # xAI Grok API key
 SECRET_KEY = 'django-insecure-your-secret-key-here'
 DEBUG = True
-ALLOWED_HOSTS = ['localhost', '127.0.0.1']
+ALLOWED_HOSTS = ['localhost', '127.0.0.1','resumeaii.pythonanywhere.com']
 
 INSTALLED_APPS = [
     'django.contrib.admin',
