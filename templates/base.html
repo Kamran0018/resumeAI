@@ -99,6 +99,21 @@
             --ease: cubic-bezier(0.16, 1, 0.3, 1);
             --transition: all 0.25s var(--ease);
             --transition-fast: all 0.15s var(--ease);
+
+            /* Dynamic outline buttons - Dark Theme */
+            --btn-outline-bg: rgba(255, 255, 255, 0.04);
+            --btn-outline-border: rgba(148, 163, 184, 0.15);
+            --btn-outline-color: #F8FAFC;
+            --btn-outline-hover-bg: rgba(255, 255, 255, 0.08);
+            --btn-outline-hover-border: rgba(148, 163, 184, 0.30);
+            --btn-outline-hover-color: #FFFFFF;
+            --btn-gold-text: #0F172A;
+
+            /* Primary buttons - Dark Theme */
+            --btn-primary-bg: linear-gradient(135deg, #6366F1 0%, #8B5CF6 100%);
+            --btn-primary-hover-bg: linear-gradient(135deg, #4F46E5 0%, #7C3AED 100%);
+            --btn-primary-border: 1px solid rgba(99, 102, 241, 0.4);
+            --btn-primary-shadow: 0 4px 18px rgba(99, 102, 241, 0.35);
         }
 
         /* Modern Clean Light SaaS Theme */
@@ -120,6 +135,118 @@
             --shadow-sm: 0 1px 3px rgba(15, 23, 42, 0.08);
             --shadow: 0 4px 20px rgba(15, 23, 42, 0.08);
             --shadow-lg: 0 12px 36px rgba(15, 23, 42, 0.12);
+
+            /* High-contrast light theme accents */
+            --primary: #4F46E5;
+            --indigo: #4F46E5;
+            --indigo-light: #4338CA;
+            --indigo-glow: rgba(79, 70, 229, 0.15);
+            --purple: #7C3AED;
+            --purple-light: #6D28D9;
+            --purple-glow: rgba(124, 58, 237, 0.15);
+            --violet: #7C3AED;
+            --blue: #2563EB;
+            --blue-light: #1D4ED8;
+            --blue-glow: rgba(37, 99, 235, 0.15);
+            --cyan: #0891B2;
+            --cyan-light: #0E7490;
+            --cyan-glow: rgba(8, 145, 178, 0.15);
+            --emerald: #059669;
+            --emerald-light: #047857;
+            --gold: #D97706;
+            --gold-light: #B45309;
+            --rose: #E11D48;
+            --rose-light: #BE123C;
+
+            /* Dynamic outline buttons - Light Theme */
+            --btn-outline-bg: rgba(79, 70, 229, 0.06);
+            --btn-outline-border: rgba(79, 70, 229, 0.18);
+            --btn-outline-color: #4338CA;
+            --btn-outline-hover-bg: rgba(79, 70, 229, 0.12);
+            --btn-outline-hover-border: rgba(79, 70, 229, 0.32);
+            --btn-outline-hover-color: #312E81;
+            --btn-gold-text: #FFFFFF;
+
+            /* Primary buttons - Light Theme */
+            --btn-primary-bg: linear-gradient(135deg, #4F46E5 0%, #7C3AED 100%);
+            --btn-primary-hover-bg: linear-gradient(135deg, #3730A3 0%, #5B21B6 100%);
+            --btn-primary-border: 1px solid rgba(79, 70, 229, 0.4);
+            --btn-primary-shadow: 0 4px 18px rgba(79, 70, 229, 0.20);
+        }
+
+        /* ── Light Theme Overrides ── */
+        [data-theme="light"] body::before {
+            background:
+                radial-gradient(ellipse 70% 45% at 18% -8%, rgba(99, 102, 241, 0.08) 0%, transparent 60%),
+                radial-gradient(ellipse 55% 35% at 82% 108%, rgba(139, 92, 246, 0.05) 0%, transparent 55%);
+        }
+
+        [data-theme="light"] .card,
+        [data-theme="light"] .stat-card,
+        [data-theme="light"] .resume-card {
+            background: #FFFFFF;
+            border-color: rgba(99, 102, 241, 0.12);
+            box-shadow: 0 4px 20px rgba(99, 102, 241, 0.05);
+        }
+
+        [data-theme="light"] .card:hover,
+        [data-theme="light"] .stat-card:hover,
+        [data-theme="light"] .resume-card:hover {
+            border-color: rgba(99, 102, 241, 0.25);
+            box-shadow: 0 10px 30px rgba(99, 102, 241, 0.10);
+        }
+
+        [data-theme="light"] .public-navbar {
+            background: rgba(255, 255, 255, 0.85);
+            border-color: rgba(99, 102, 241, 0.12);
+        }
+
+        [data-theme="light"] .topbar {
+            background: rgba(255, 255, 255, 0.85);
+            border-color: rgba(99, 102, 241, 0.12);
+        }
+
+        [data-theme="light"] .sidebar-user {
+            background: rgba(99, 102, 241, 0.05);
+            border-color: rgba(99, 102, 241, 0.12);
+        }
+
+        [data-theme="light"] .sidebar-link:hover {
+            background: rgba(99, 102, 241, 0.06);
+            color: var(--primary);
+        }
+
+        [data-theme="light"] .sidebar-link.active {
+            background: rgba(99, 102, 241, 0.12);
+            color: var(--primary);
+        }
+
+        [data-theme="light"] .progress-track {
+            background: rgba(99, 102, 241, 0.08);
+        }
+
+        [data-theme="light"] .table th {
+            background: rgba(99, 102, 241, 0.06);
+            border-bottom-color: rgba(99, 102, 241, 0.18);
+            color: var(--text-secondary);
+        }
+
+        [data-theme="light"] .table td {
+            border-bottom-color: rgba(99, 102, 241, 0.08);
+        }
+
+        [data-theme="light"] .table tbody tr:hover {
+            background: rgba(99, 102, 241, 0.03);
+        }
+
+        [data-theme="light"] .skill-tag {
+            background: rgba(99, 102, 241, 0.06);
+            color: #4338CA;
+            border-color: rgba(99, 102, 241, 0.18);
+        }
+
+        [data-theme="light"] .site-footer {
+            border-top-color: rgba(99, 102, 241, 0.12);
         }
 
         /* THEME TOGGLE BUTTON STYLING */
@@ -585,34 +712,62 @@
         }
 
         .btn-primary {
-            background: linear-gradient(135deg, #6366F1 0%, #8B5CF6 100%);
+            background: var(--btn-primary-bg) !important;
             color: #FFFFFF !important;
-            border: 1px solid rgba(99, 102, 241, 0.4);
-            box-shadow: 0 4px 18px rgba(99, 102, 241, 0.35);
+            border: var(--btn-primary-border) !important;
+            box-shadow: var(--btn-primary-shadow) !important;
         }
 
         .btn-primary:hover {
-            background: linear-gradient(135deg, #4F46E5 0%, #7C3AED 100%);
-            border-color: #8B5CF6;
-            box-shadow: 0 6px 24px rgba(139, 92, 246, 0.45);
+            background: var(--btn-primary-hover-bg) !important;
+            border-color: var(--indigo-light) !important;
+            box-shadow: 0 6px 24px rgba(139, 92, 246, 0.45) !important;
+            transform: translateY(-2px) !important;
+        }
+
+        .btn-gold {
+            background: linear-gradient(135deg, var(--gold) 0%, var(--gold-light) 100%);
+            color: var(--btn-gold-text) !important;
+            border: 1px solid rgba(245, 158, 11, 0.4);
+            box-shadow: 0 4px 18px rgba(245, 158, 11, 0.25);
+        }
+
+        .btn-gold:hover {
+            background: linear-gradient(135deg, var(--gold-light) 0%, var(--gold) 100%);
+            border-color: var(--gold);
+            box-shadow: 0 6px 24px rgba(245, 158, 11, 0.35);
+            transform: translateY(-2px);
+        }
+
+        .btn-danger {
+            background: linear-gradient(135deg, var(--rose) 0%, var(--rose-light) 100%);
+            color: #FFFFFF !important;
+            border: 1px solid rgba(244, 63, 94, 0.4);
+            box-shadow: 0 4px 18px rgba(244, 63, 94, 0.25);
+        }
+
+        .btn-danger:hover {
+            background: linear-gradient(135deg, var(--rose-light) 0%, var(--rose) 100%);
+            border-color: var(--rose);
+            box-shadow: 0 6px 24px rgba(244, 63, 94, 0.35);
             transform: translateY(-2px);
         }
 
         .btn-secondary,
         .btn-outline {
-            background: rgba(255, 255, 255, 0.04);
-            border: 1px solid rgba(148, 163, 184, 0.15);
-            color: #F8FAFC !important;
+            background: var(--btn-outline-bg);
+            border: 1px solid var(--btn-outline-border);
+            color: var(--btn-outline-color) !important;
             backdrop-filter: blur(8px);
         }
 
         .btn-secondary:hover,
         .btn-outline:hover {
-            background: rgba(255, 255, 255, 0.08);
-            border-color: rgba(148, 163, 184, 0.30);
-            color: #FFFFFF !important;
+            background: var(--btn-outline-hover-bg);
+            border-color: var(--btn-outline-hover-border);
+            color: var(--btn-outline-hover-color) !important;
             transform: translateY(-2px);
-            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
+            box-shadow: 0 4px 16px rgba(99, 102, 241, 0.12);
         }
 
         .btn-ghost {
@@ -1507,8 +1662,8 @@
                 </div>
 
                 <div class="topbar-right">
-                    <button type="button" class="theme-toggle-btn" id="themeToggleBtn"
-                        onclick="toggleTheme()" title="Toggle Light / Dark Mode">
+                    <button type="button" class="theme-toggle-btn" id="themeToggleBtn" onclick="toggleTheme()"
+                        title="Toggle Light / Dark Mode">
                         <i class="fas fa-sun theme-icon-class" id="themeIcon" style="color:var(--gold-light);"></i>
                         <span class="theme-label" style="font-size:12px;font-weight:600;">Dark</span>
                     </button>
@@ -1546,17 +1701,22 @@
                             <i class="fas fa-briefcase"></i>
                         </div>
                         <div class="brand-text" style="margin-left:8px;">
-                            <div class="name" style="font-size:16px;font-weight:700;color:var(--text-primary);">ResumeAI</div>
-                            <div class="tagline" style="font-size:10px;color:var(--indigo-light);letter-spacing:1px;text-transform:uppercase;">AI Recruitment</div>
+                            <div class="name" style="font-size:16px;font-weight:700;color:var(--text-primary);">ResumeAI
+                            </div>
+                            <div class="tagline"
+                                style="font-size:10px;color:var(--indigo-light);letter-spacing:1px;text-transform:uppercase;">
+                                AI Recruitment</div>
                         </div>
                     </a>
 
                     <div style="display:flex;align-items:center;gap:10px;">
-                        <button type="button" class="theme-toggle-btn" onclick="toggleTheme()" title="Toggle Light / Dark Mode">
+                        <button type="button" class="theme-toggle-btn" onclick="toggleTheme()"
+                            title="Toggle Light / Dark Mode">
                             <i class="fas fa-sun theme-icon-class" style="color:var(--gold-light);"></i>
                             <span class="theme-label" style="font-size:12px;font-weight:600;">Dark</span>
                         </button>
-                        <button type="button" class="topbar-btn pub-mobile-btn" id="pubMobileBtn" onclick="togglePublicMenu()" title="Toggle Navigation Menu">
+                        <button type="button" class="topbar-btn pub-mobile-btn" id="pubMobileBtn"
+                            onclick="togglePublicMenu()" title="Toggle Navigation Menu">
                             <i class="fas fa-bars"></i>
                         </button>
                     </div>
@@ -1564,8 +1724,10 @@
                     <div class="pub-nav-links" id="pubNavLinks">
                         <a href="{% url 'home' %}" onclick="closePublicMenu()">Home</a>
                         <a href="{% url 'dashboard' %}" onclick="closePublicMenu()">Dashboard</a>
-                        <a href="{% url 'login_candidate' %}" class="btn btn-outline btn-sm" onclick="closePublicMenu()">Login</a>
-                        <a href="{% url 'register_candidate' %}" class="btn btn-primary btn-sm" onclick="closePublicMenu()">Get Started</a>
+                        <a href="{% url 'login_candidate' %}" class="btn btn-outline btn-sm"
+                            onclick="closePublicMenu()">Login</a>
+                        <a href="{% url 'register_candidate' %}" class="btn btn-primary btn-sm"
+                            onclick="closePublicMenu()">Get Started</a>
                     </div>
                 </nav>
 
@@ -1612,16 +1774,20 @@
         {% else %}
     </div>
 
-    <footer class="site-footer" style="background:#050810;border-top:1px solid rgba(148,163,184,0.15);padding:60px 20px 30px;margin-top:60px;">
-        <div style="max-width:1140px;margin:0 auto;display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:40px;" class="footer-grid-4">
+    <footer class="site-footer"
+        style="background:var(--bg-surface);border-top:1px solid var(--border);padding:60px 20px 30px;margin-top:60px;">
+        <div style="max-width:1140px;margin:0 auto;display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:40px;"
+            class="footer-grid-4">
             <div>
                 <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px;">
                     <div class="brand-logo" style="width:34px;height:34px;font-size:16px;">
                         <i class="fas fa-briefcase"></i>
                     </div>
                     <div>
-                        <div style="font-size:18px;font-weight:800;color:#F8FAFC;">ResumeAI</div>
-                        <div style="font-size:9px;color:var(--indigo-light);letter-spacing:1.2px;text-transform:uppercase;font-weight:700;">AI RECRUITMENT PLATFORM</div>
+                        <div style="font-size:18px;font-weight:800;color:var(--text-primary);">ResumeAI</div>
+                        <div
+                            style="font-size:9px;color:var(--indigo-light);letter-spacing:1.2px;text-transform:uppercase;font-weight:700;">
+                            AI RECRUITMENT PLATFORM</div>
                     </div>
                 </div>
                 <p style="font-size:13px;color:var(--text-secondary);max-width:300px;line-height:1.6;">
@@ -1630,26 +1796,32 @@
             </div>
 
             <div>
-                <h4 style="font-size:14px;font-weight:700;color:#F8FAFC;margin-bottom:16px;">Product</h4>
+                <h4 style="font-size:14px;font-weight:700;color:var(--text-primary);margin-bottom:16px;">Product</h4>
                 <ul style="list-style:none;display:flex;flex-direction:column;gap:10px;font-size:13px;">
-                    <li><a href="/#ats-analysis" style="color:var(--text-secondary);text-decoration:none;">AI Screening</a></li>
-                    <li><a href="/#ats-analysis" style="color:var(--text-secondary);text-decoration:none;">ATS Scoring</a></li>
-                    <li><a href="/#features" style="color:var(--text-secondary);text-decoration:none;">Job Matching</a></li>
-                    <li><a href="/#recruiters" style="color:var(--text-secondary);text-decoration:none;">Candidate Ranking</a></li>
+                    <li><a href="/#ats-analysis" style="color:var(--text-secondary);text-decoration:none;">AI
+                            Screening</a></li>
+                    <li><a href="/#ats-analysis" style="color:var(--text-secondary);text-decoration:none;">ATS
+                            Scoring</a></li>
+                    <li><a href="/#features" style="color:var(--text-secondary);text-decoration:none;">Job Matching</a>
+                    </li>
+                    <li><a href="/#recruiters" style="color:var(--text-secondary);text-decoration:none;">Candidate
+                            Ranking</a></li>
                 </ul>
             </div>
 
             <div>
-                <h4 style="font-size:14px;font-weight:700;color:#F8FAFC;margin-bottom:16px;">Resources</h4>
+                <h4 style="font-size:14px;font-weight:700;color:var(--text-primary);margin-bottom:16px;">Resources</h4>
                 <ul style="list-style:none;display:flex;flex-direction:column;gap:10px;font-size:13px;">
-                    <li><a href="/#how-it-works" style="color:var(--text-secondary);text-decoration:none;">How It Works</a></li>
+                    <li><a href="/#how-it-works" style="color:var(--text-secondary);text-decoration:none;">How It
+                            Works</a></li>
                     <li><a href="/#features" style="color:var(--text-secondary);text-decoration:none;">FAQ</a></li>
-                    <li><a href="/#technology" style="color:var(--text-secondary);text-decoration:none;">Documentation</a></li>
+                    <li><a href="/#technology"
+                            style="color:var(--text-secondary);text-decoration:none;">Documentation</a></li>
                 </ul>
             </div>
 
             <div>
-                <h4 style="font-size:14px;font-weight:700;color:#F8FAFC;margin-bottom:16px;">Company</h4>
+                <h4 style="font-size:14px;font-weight:700;color:var(--text-primary);margin-bottom:16px;">Company</h4>
                 <ul style="list-style:none;display:flex;flex-direction:column;gap:10px;font-size:13px;">
                     <li><a href="/#about" style="color:var(--text-secondary);text-decoration:none;">About</a></li>
                     <li><a href="/#about" style="color:var(--text-secondary);text-decoration:none;">Contact</a></li>
@@ -1659,7 +1831,8 @@
             </div>
         </div>
 
-        <div style="max-width:1140px;margin:40px auto 0;padding-top:24px;border-top:1px solid rgba(148,163,184,0.1);display:flex;align-items:center;justify-content:space-between;font-size:13px;color:var(--text-secondary);" class="footer-bottom-row">
+        <div style="max-width:1140px;margin:40px auto 0;padding-top:24px;border-top:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;font-size:13px;color:var(--text-secondary);"
+            class="footer-bottom-row">
             <div>&copy; 2026 ResumeAI. All rights reserved.</div>
             <div style="display:flex;gap:16px;">
                 <a href="#" style="color:var(--text-secondary);"><i class="fab fa-github"></i></a>
@@ -1704,7 +1877,7 @@
             // Auto close mobile sidebar when clicking any nav link on mobile
             const sidebarLinks = document.querySelectorAll('.sidebar-link');
             sidebarLinks.forEach(link => {
-                link.addEventListener('click', function() {
+                link.addEventListener('click', function () {
                     if (window.innerWidth <= 768) {
                         closeSidebar();
                     }
@@ -1712,7 +1885,7 @@
             });
 
             // Close public menu when clicking outside
-            document.addEventListener('click', function(e) {
+            document.addEventListener('click', function (e) {
                 const pubNavLinks = document.getElementById('pubNavLinks');
                 const pubMobileBtn = document.getElementById('pubMobileBtn');
                 if (pubNavLinks && pubNavLinks.classList.contains('show')) {
