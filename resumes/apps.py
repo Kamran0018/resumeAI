@@ -7,7 +7,6 @@ class ResumesConfig(AppConfig):
 
     def ready(self):
         # Layout and templates are fixed manually.
-        pass
 
         # Run database migrations automatically when starting django server
         if 'runserver' in sys.argv:

@@ -13,6 +13,7 @@ from applications.models import Application
 from resumes.models import Resume
 from ai_services.matcher import ResumeJobMatcher
 from ai_services.jd_parser import JDParser
+from django.db.models import Avg, Max
 
 @login_required
 def post_job(request):
@@ -77,14 +78,37 @@ def job_detail(request, job_id):
         messages.error(request, 'You do not own this job')
         return redirect('dashboard')
     
-    applications = Application.objects.filter(job=job)
-    matcher = ResumeJobMatcher()
-    ranked = matcher.rank_candidates(job, applications)
+    applications = Application.objects.filter(job=job).select_related('candidate', 'candidate__candidate_profile')
+    
+    # Calculate Stats
+    stats = {
+        'total': applications.count(),
+        'avg_match': applications.aggregate(Avg('match_score'))['match_score__avg'] or 0,
+        'top_match': applications.aggregate(Max('match_score'))['match_score__max'] or 0,
+    }
+    
+    # Filtering
+    min_score = request.GET.get('min_score')
+    if min_score and min_score.isdigit():
+        applications = applications.filter(match_score__gte=int(min_score))
+        
+    # Sorting
+    sort_by = request.GET.get('sort', 'rank')
+    if sort_by == 'score_desc':
+        applications = applications.order_by('-match_score')
+    elif sort_by == 'score_asc':
+        applications = applications.order_by('match_score')
+    elif sort_by == 'newest':
+        applications = applications.order_by('-applied_at')
+    else:
+        applications = applications.order_by('rank') # default ranking
     
     context = {
         'job': job,
-        'ranked_candidates': ranked,
-        'applications_count': applications.count(),
+        'applications': applications,
+        'stats': stats,
+        'current_sort': sort_by,
+        'current_min_score': min_score,
     }
     return render(request, 'jobs/job_detail.html', context)
 
@@ -97,51 +121,6 @@ def all_jobs(request):
     
     jobs = Job.objects.filter(is_active=True)
     return render(request, 'jobs/all_jobs.html', {'jobs': jobs})
-
-@login_required
-def apply_job(request, job_id):
-    """Candidate applies to a job"""
-    if request.user.user_type != 'candidate':
-        messages.error(request, 'Only candidates can apply')
-        return redirect('dashboard')
-    
-    job = get_object_or_404(Job, id=job_id, is_active=True)
-    
-    if Application.objects.filter(candidate=request.user, job=job).exists():
-        messages.warning(request, 'You have already applied to this job')
-        return redirect('job_detail', job_id=job.id)
-    
-    resume = Resume.objects.filter(user=request.user).first()
-    if not resume:
-        messages.error(request, 'Please upload a resume first')
-        return redirect('upload_resume')
-    
-    application = Application.objects.create(
-        candidate=request.user,
-        job=job,
-        resume=resume
-    )
-    
-    matcher = ResumeJobMatcher()
-    match_result = matcher.match_resume_to_job(resume, job)
-    
-    application.match_score = match_result['overall_score']
-    application.match_breakdown = match_result
-    application.ai_recommendation = match_result['recommendation']
-    
-    # v2.0 fields
-    application.gemini_match = match_result.get('gemini_match', {})
-    application.grok_match = match_result.get('grok_match', {})
-    application.fusion_match = match_result
-    application.hire_probability = match_result.get('hire_probability', 0)
-    application.interview_questions = match_result.get('interview_questions', [])
-    application.save()
-    
-    job.applications_count += 1
-    job.save()
-    
-    messages.success(request, f'Applied to {job.title}! Score: {match_result["overall_score"]}%')
-    return redirect('my_applications')
 
 
 @login_required

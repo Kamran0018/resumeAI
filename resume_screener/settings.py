@@ -29,6 +29,7 @@ INSTALLED_APPS = [
     'jobs',
     'applications',
     'ai_services',
+    'matching',
 ]
 
 

@@ -2,3 +2,5 @@ Django
 python-dotenv
 google-genai
 pypdf
+sentence-transformers
+scikit-learn

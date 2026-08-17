@@ -10,10 +10,12 @@
 
     .auth-card {
         background: var(--bg-card);
+        backdrop-filter: blur(16px);
+        -webkit-backdrop-filter: blur(16px);
         border: 1px solid var(--border);
         border-radius: var(--radius-lg);
-        padding: 36px 32px;
-        box-shadow: var(--shadow);
+        padding: 40px 36px;
+        box-shadow: 0 8px 32px rgba(0,0,0,0.2), inset 0 1px 0 rgba(255,255,255,0.05);
     }
 
     .auth-icon {
@@ -50,6 +52,20 @@
         .auth-card { padding: 28px 20px; }
         .name-grid { grid-template-columns: 1fr; }
     }
+
+    .form-group { margin-bottom: 20px; text-align: left; }
+    .form-group label {
+        display: block;
+        font-size: 12px;
+        font-weight: 700;
+        color: var(--text-secondary);
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        margin-bottom: 8px;
+    }
+    .form-group label i { margin-right: 6px; color: var(--indigo-light); }
+    
+    .btn-block { width: 100%; display: flex; }
 </style>
 {% endblock %}
 

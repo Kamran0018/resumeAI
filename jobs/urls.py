@@ -8,5 +8,4 @@ urlpatterns = [
     path('my-jobs/', views.my_jobs, name='my_jobs'),
     path('<int:job_id>/', views.job_detail, name='job_detail'),
     path('all/', views.all_jobs, name='all_jobs'),
-    path('<int:job_id>/apply/', views.apply_job, name='apply_job'),
 ]

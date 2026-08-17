@@ -80,6 +80,47 @@
         .quick-actions { width: 100%; flex-direction: column; gap: 8px; }
         .quick-actions .btn { width: 100%; justify-content: center; }
         .tip-banner { flex-direction: column; padding: 16px; }
+        .resume-card { flex-direction: column; align-items: flex-start; }
+    }
+
+    /* Resume & Application Cards */
+    .resume-card {
+        background: var(--bg-card);
+        backdrop-filter: blur(16px);
+        -webkit-backdrop-filter: blur(16px);
+        border: 1px solid var(--border);
+        border-radius: var(--radius-lg);
+        padding: 24px 32px;
+        margin-bottom: 20px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 24px;
+        transition: var(--transition);
+    }
+    .resume-card:hover {
+        border-color: var(--border-bright);
+        background: var(--bg-card-hover);
+        transform: translateY(-2px);
+        box-shadow: 0 12px 40px rgba(0,0,0,0.3);
+    }
+    .resume-card h4 {
+        font-family: 'Space Grotesk', sans-serif;
+        font-size: 18px;
+        font-weight: 700;
+        margin-bottom: 6px;
+    }
+    .resume-card .meta span {
+        font-size: 13px;
+        color: var(--text-secondary);
+        display: flex;
+        align-items: center;
+        gap: 6px;
+    }
+    .resume-card .actions {
+        display: flex;
+        align-items: center;
+        gap: 12px;
     }
 </style>
 {% endblock %}
@@ -105,7 +146,7 @@
 </div>
 
 <!-- Stats Grid -->
-<div class="stats-grid">
+<div class="grid-4">
     <div class="stat-card">
         <span class="icon"><i class="fas fa-file-alt"></i></span>
         <div class="number">{{ total_resumes|default:0 }}</div>
@@ -139,7 +180,7 @@
     <a href="{% url 'my_applications' %}" class="btn btn-gold" id="dash-apps-btn">
         <i class="fas fa-list"></i> My Applications
     </a>
-    <a href="{% url 'profile' %}" class="btn btn-ghost" id="dash-profile-btn">
+    <a href="{% url 'profile' %}" class="btn btn-outline" id="dash-profile-btn">
         <i class="fas fa-user-edit"></i> Edit Profile
     </a>
 </div>
@@ -232,7 +273,7 @@
                     {% endif %}
                 </div>
             </div>
-            <div style="display:flex;align-items:center;gap:10px;">
+            <div class="actions">
                 <span class="tag {% if app.status == 'shortlisted' %}tag-emerald{% elif app.status == 'rejected' %}tag-rose{% elif app.status == 'interview' %}tag-gold{% else %}tag-indigo{% endif %}">
                     {{ app.get_status_display }}
                 </span>

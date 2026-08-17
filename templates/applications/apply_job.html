@@ -1,0 +1,172 @@
+{% extends 'base.html' %}
+
+{% block title %}Apply for {{ job.title }} — ResumeAI{% endblock %}
+
+{% block extra_css %}
+<style>
+    .apply-container {
+        max-width: 800px;
+        margin: 40px auto;
+        padding: 30px;
+        background: var(--bg-card);
+        border: 1px solid var(--border-color);
+        border-radius: 16px;
+        box-shadow: var(--shadow-md);
+    }
+    .job-summary {
+        padding: 20px;
+        background: rgba(255, 255, 255, 0.02);
+        border: 1px solid var(--border-color);
+        border-radius: 12px;
+        margin-bottom: 30px;
+    }
+    .job-summary h2 {
+        font-family: 'Space Grotesk', sans-serif;
+        margin-top: 0;
+        margin-bottom: 10px;
+        color: var(--text-bright);
+    }
+    .job-summary p {
+        color: var(--text-muted);
+        margin: 0;
+        font-size: 15px;
+    }
+    
+    .resume-list {
+        display: flex;
+        flex-direction: column;
+        gap: 15px;
+        margin-bottom: 30px;
+    }
+    
+    .resume-option {
+        display: flex;
+        align-items: center;
+        padding: 20px;
+        background: var(--bg-surface);
+        border: 2px solid var(--border-color);
+        border-radius: 12px;
+        cursor: pointer;
+        transition: all 0.2s;
+    }
+    
+    .resume-option:hover {
+        border-color: var(--blue-light);
+        background: rgba(56, 189, 248, 0.05);
+    }
+    
+    .resume-option input[type="radio"] {
+        margin-right: 15px;
+        width: 20px;
+        height: 20px;
+        accent-color: var(--blue-main);
+    }
+    
+    .resume-details h4 {
+        margin: 0 0 5px 0;
+        color: var(--text-main);
+        font-size: 16px;
+    }
+    
+    .resume-details p {
+        margin: 0;
+        color: var(--text-muted);
+        font-size: 14px;
+    }
+    
+    .btn-apply {
+        width: 100%;
+        padding: 15px;
+        font-size: 16px;
+        font-weight: 600;
+        border-radius: 12px;
+        background: linear-gradient(135deg, var(--blue-main), var(--purple-main));
+        color: white;
+        border: none;
+        cursor: pointer;
+        transition: opacity 0.2s, transform 0.2s;
+    }
+    
+    .btn-apply:hover {
+        opacity: 0.9;
+        transform: translateY(-2px);
+    }
+    
+    .btn-apply:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+        transform: none;
+    }
+    
+    .no-resumes {
+        text-align: center;
+        padding: 40px 20px;
+        background: rgba(239, 68, 68, 0.1);
+        border: 1px solid rgba(239, 68, 68, 0.3);
+        border-radius: 12px;
+        color: var(--text-bright);
+    }
+    
+    .no-resumes a {
+        color: var(--blue-light);
+        text-decoration: none;
+        font-weight: 500;
+    }
+    .no-resumes a:hover {
+        text-decoration: underline;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="apply-container">
+    <div class="job-summary">
+        <h2>{{ job.title }}</h2>
+        <p>{{ job.company }} • {{ job.location }}</p>
+    </div>
+
+    <form method="POST" action="{% url 'apply_job' job.id %}" id="apply-form">
+        {% csrf_token %}
+        
+        <h3 style="margin-bottom: 20px; font-family: 'Space Grotesk', sans-serif;">Select a Resume to Apply</h3>
+        
+        {% if resumes %}
+            <div class="resume-list">
+                {% for resume in resumes %}
+                    <label class="resume-option">
+                        <input type="radio" name="resume_id" value="{{ resume.id }}" required>
+                        <div class="resume-details">
+                            <h4>{{ resume.title }}</h4>
+                            <p>Uploaded: {{ resume.created_at|date:"M d, Y" }}</p>
+                        </div>
+                    </label>
+                {% endfor %}
+            </div>
+            
+            <button type="submit" class="btn-apply" id="submit-btn">Submit Application</button>
+        {% else %}
+            <div class="no-resumes">
+                <p style="margin-bottom: 10px;">You don't have any uploaded resumes yet.</p>
+                <a href="{% url 'upload_resume' %}">Upload a Resume first</a>
+            </div>
+        {% endif %}
+    </form>
+</div>
+
+{% block extra_js %}
+<script>
+    document.getElementById('apply-form').addEventListener('submit', function(e) {
+        if (!document.querySelector('input[name="resume_id"]:checked')) {
+            e.preventDefault();
+            alert('Please select a resume to apply.');
+            return;
+        }
+        
+        // Show loading state
+        const btn = document.getElementById('submit-btn');
+        btn.innerHTML = '<span class="spinner" style="display:inline-block; margin-right:8px;">⏳</span> Matching Resume to Job...';
+        btn.disabled = true;
+    });
+</script>
+{% endblock %}
+{% endblock %}

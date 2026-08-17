@@ -422,53 +422,111 @@
         {% if application.match_breakdown %}
         <div class="match-grid">
             <div class="match-card">
-                <div class="val">{{ application.match_breakdown.skill_match|floatformat:0|default:"0" }}%</div>
-                <div class="lbl">Skills</div>
+                <div class="val">{{ application.match_breakdown.skill_score|floatformat:0|default:"0" }}%</div>
+                <div class="lbl">Req. Skills</div>
             </div>
             <div class="match-card">
-                <div class="val">{{ application.match_breakdown.experience_match|floatformat:0|default:"0" }}%</div>
+                <div class="val">{{ application.match_breakdown.experience_score|floatformat:0|default:"0" }}%</div>
                 <div class="lbl">Experience</div>
             </div>
             <div class="match-card">
-                <div class="val">{{ application.match_breakdown.semantic_match|floatformat:0|default:"0" }}%</div>
+                <div class="val">{{ application.match_breakdown.semantic_score|floatformat:0|default:"0" }}%</div>
                 <div class="lbl">Semantic</div>
             </div>
+            <div class="match-card">
+                <div class="val">{{ application.match_breakdown.education_score|floatformat:0|default:"0" }}%</div>
+                <div class="lbl">Education</div>
+            </div>
+            <div class="match-card">
+                <div class="val">{{ application.match_breakdown.preferred_skill_score|floatformat:0|default:"0" }}%</div>
+                <div class="lbl">Pref. Skills</div>
+            </div>
         </div>
 
-        <!-- Matched Skills -->
-        {% if application.match_breakdown.matched_skills %}
-        <div style="margin-top: 16px; padding-top: 14px; border-top: 1px solid rgba(255,255,255,0.06);">
-            <div class="section-heading" style="font-size: 13px; color: var(--emerald-light);">
-                <i class="fas fa-check-circle"></i> Matched Skills
+        <!-- Experience & Education Details -->
+        <div style="margin-top: 20px;">
+            <div class="info-row">
+                <span class="info-row-label">Experience</span>
+                <div style="text-align: right;">
+                    <div style="font-size: 13px; color: var(--text-primary);">Required: {{ application.match_breakdown.experience.required }} years</div>
+                    <div style="font-size: 13px; color: var(--text-primary);">Candidate: {{ application.match_breakdown.experience.candidate }} years</div>
+                    {% if application.match_breakdown.experience.meets_requirement %}
+                        <div style="font-size: 12px; font-weight: bold; color: var(--emerald-light);"><i class="fas fa-check"></i> Meets Requirement</div>
+                    {% else %}
+                        <div style="font-size: 12px; font-weight: bold; color: var(--rose-light);"><i class="fas fa-times"></i> Does Not Meet</div>
+                    {% endif %}
+                </div>
             </div>
-            <div class="skills-badge-list">
+            
+            <div class="info-row">
+                <span class="info-row-label">Education</span>
+                <div style="text-align: right;">
+                    <div style="font-size: 13px; color: var(--text-primary);">Required: {{ application.match_breakdown.education.required_level|default:"None" }}</div>
+                    <div style="font-size: 13px; color: var(--text-primary);">Candidate: {{ application.match_breakdown.education.candidate_level|default:"None" }}</div>
+                    {% if application.match_breakdown.education.match %}
+                        <div style="font-size: 12px; font-weight: bold; color: var(--emerald-light);"><i class="fas fa-check"></i> Match</div>
+                    {% else %}
+                        <div style="font-size: 12px; font-weight: bold; color: var(--rose-light);"><i class="fas fa-times"></i> Mismatch</div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <!-- Required Skills -->
+        {% if application.match_breakdown.matched_skills or application.match_breakdown.missing_skills %}
+        <div style="margin-top: 16px; padding-top: 14px; border-top: 1px solid rgba(255,255,255,0.06);">
+            <div class="section-heading" style="font-size: 13px;">
+                <i class="fas fa-code"></i> Required Skills
+            </div>
+            {% if application.match_breakdown.matched_skills %}
+            <div class="skills-badge-list" style="margin-bottom: 10px;">
                 {% for skill in application.match_breakdown.matched_skills %}
-                <span class="badge-matched">{{ skill }}</span>
+                <span class="badge-matched"><i class="fas fa-check" style="margin-right:4px;"></i>{{ skill }}</span>
                 {% endfor %}
             </div>
-        </div>
-        {% endif %}
-
-        <!-- Missing Skills -->
-        {% if application.match_breakdown.missing_skills %}
-        <div style="margin-top: 14px; padding-top: 14px; border-top: 1px solid rgba(255,255,255,0.06);">
-            <div class="section-heading" style="font-size: 13px; color: var(--rose-light);">
-                <i class="fas fa-exclamation-circle"></i> Missing Skills
-            </div>
+            {% endif %}
+            
+            {% if application.match_breakdown.missing_skills %}
             <div class="skills-badge-list">
                 {% for skill in application.match_breakdown.missing_skills %}
-                <span class="badge-missing">{{ skill }}</span>
+                <span class="badge-missing"><i class="fas fa-times" style="margin-right:4px;"></i>{{ skill }}</span>
                 {% endfor %}
             </div>
+            {% endif %}
         </div>
         {% endif %}
 
-        <!-- AI Summary -->
-        {% if application.match_breakdown.summary %}
-        <div style="margin-top: 14px; padding-top: 14px; border-top: 1px solid rgba(255,255,255,0.06); font-size: 12px; line-height: 1.6; color: var(--text-muted);">
-            <strong style="color: var(--text-secondary);">AI Summary:</strong> {{ application.match_breakdown.summary }}
+        <!-- Preferred Skills -->
+        {% if application.match_breakdown.matched_preferred_skills or application.match_breakdown.missing_preferred_skills %}
+        <div style="margin-top: 16px; padding-top: 14px; border-top: 1px solid rgba(255,255,255,0.06);">
+            <div class="section-heading" style="font-size: 13px;">
+                <i class="fas fa-star"></i> Preferred Skills
+            </div>
+            {% if application.match_breakdown.matched_preferred_skills %}
+            <div class="skills-badge-list" style="margin-bottom: 10px;">
+                {% for skill in application.match_breakdown.matched_preferred_skills %}
+                <span class="badge-matched"><i class="fas fa-check" style="margin-right:4px;"></i>{{ skill }}</span>
+                {% endfor %}
+            </div>
+            {% endif %}
+            
+            {% if application.match_breakdown.missing_preferred_skills %}
+            <div class="skills-badge-list">
+                {% for skill in application.match_breakdown.missing_preferred_skills %}
+                <span class="badge-missing"><i class="fas fa-times" style="margin-right:4px;"></i>{{ skill }}</span>
+                {% endfor %}
+            </div>
+            {% endif %}
         </div>
         {% endif %}
+        
+        <!-- Explanation -->
+        {% if application.match.explanation %}
+        <div style="margin-top: 16px; padding: 14px; background: rgba(255,255,255,0.04); border-radius: var(--radius-sm); font-size: 13px; line-height: 1.6; color: var(--text-secondary);">
+            <strong>Summary:</strong> {{ application.match.explanation }}
+        </div>
+        {% endif %}
+        
         {% endif %}
 
         <!-- Recruiter Status Update -->
