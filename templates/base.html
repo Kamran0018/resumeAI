@@ -66,6 +66,23 @@
             --transition-fast: all 0.15s ease-out;
         }
 
+        :root[data-theme="light"] {
+            --bg-base: #f4f7fb;
+            --bg-surface: rgba(255, 255, 255, 0.82);
+            --bg-card: rgba(255, 255, 255, 0.9);
+            --bg-card-hover: rgba(244, 247, 251, 1);
+            --sidebar-bg: rgba(255, 255, 255, 0.9);
+            --primary: #2f6fed;
+            --primary-glow: rgba(47, 111, 237, 0.18);
+            --indigo: #5b4ef5;
+            --indigo-glow: rgba(91, 78, 245, 0.16);
+            --text-primary: #132238;
+            --text-secondary: #51627c;
+            --text-muted: #7a889d;
+            --border: rgba(15, 23, 42, 0.08);
+            --border-bright: rgba(47, 111, 237, 0.2);
+        }
+
         *, *::before, *::after {
             margin: 0;
             padding: 0;
@@ -82,6 +99,12 @@
             overflow-x: hidden;
             position: relative;
         }
+
+        /* ── CUSTOM SCROLLBAR ── */
+        ::-webkit-scrollbar { width: 8px; height: 8px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: var(--radius-full); }
+        ::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.2); }
 
         /* ── AURORA BACKGROUND GLOWS ── */
         body::before {
@@ -107,6 +130,13 @@
             z-index: -1;
             filter: blur(80px);
             pointer-events: none;
+        }
+
+        :root[data-theme="light"] body::before {
+            background: radial-gradient(circle, rgba(91, 78, 245, 0.12) 0%, transparent 70%);
+        }
+        :root[data-theme="light"] body::after {
+            background: radial-gradient(circle, rgba(59, 130, 246, 0.08) 0%, transparent 70%);
         }
 
         h1, h2, h3, h4, h5, h6 {
@@ -342,6 +372,8 @@
         .card:hover {
             border-color: var(--border-bright);
             background: var(--bg-card-hover);
+            transform: translateY(-4px);
+            box-shadow: 0 16px 40px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.1);
         }
 
         /* STAT CARDS */
@@ -525,18 +557,35 @@
         }
 
         /* UTILS */
+        .sidebar-overlay {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; width: 100vw; height: 100vh;
+            background: rgba(0,0,0,0.5);
+            z-index: 1999;
+            backdrop-filter: blur(4px);
+        }
+        .sidebar-overlay.open { display: block; }
         .grid-2 { display: grid; grid-template-columns: repeat(2, 1fr); gap: 24px; }
         .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
         .grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 24px; }
         @media (max-width: 1024px) {
             .grid-3, .grid-4 { grid-template-columns: repeat(2, 1fr); }
-            .layout-wrapper { flex-direction: column; }
-            .sidebar { position: fixed; transform: translateX(-150%); z-index: 2000; }
+            .layout-wrapper { flex-direction: column; padding: 16px; }
+            .sidebar { position: fixed; transform: translateX(-100%); z-index: 2000; height: 100vh; top: 0; left: 0; border-radius: 0; width: 280px; transition: transform 0.4s cubic-bezier(0.25, 1, 0.5, 1); }
             .sidebar.open { transform: translateX(0); }
-            .main-area { width: 100%; margin-left: 0; }
+            .main-area { width: 100%; margin-left: 0; gap: 16px; }
+            .mobile-toggle { display: inline-flex !important; }
+            .topbar { padding: 0 16px; height: 64px; }
+            .public-navbar { padding: 0 16px; }
         }
         @media (max-width: 768px) {
             .grid-2, .grid-3, .grid-4 { grid-template-columns: 1fr; }
+            .public-navbar { padding: 0 12px; }
+            .pub-brand div:last-child { font-size: 18px !important; }
+            .pub-nav-links { gap: 8px; }
+            .pub-nav-links a:not(.btn) { display: none; }
+            .pub-nav-links .btn { padding: 8px 12px; font-size: 12px; }
         }
     </style>
     {% block extra_css %}{% endblock %}
@@ -545,6 +594,7 @@
 <body>
     {% if user.is_authenticated %}
     <div class="layout-wrapper">
+        <div class="sidebar-overlay" id="sidebarOverlay"></div>
         
         <!-- FLOATING SIDEBAR -->
         <aside class="sidebar" id="sidebar">
@@ -617,10 +667,15 @@
             <!-- TOPBAR -->
             <header class="topbar">
                 <div class="page-breadcrumb">
+                    <button class="mobile-toggle btn btn-outline" id="mobileToggle" style="display: none; padding: 8px 12px; margin-right: 16px;">
+                        <i class="fas fa-bars"></i>
+                    </button>
                     {% block breadcrumb %}Welcome back!{% endblock %}
                 </div>
                 <div>
-                    <!-- Optional: Notifications or profile btn here -->
+                    <button class="theme-toggle btn btn-outline" style="padding: 8px 12px; border-radius: 50%;">
+                        <i class="fas fa-sun"></i>
+                    </button>
                 </div>
             </header>
 
@@ -646,6 +701,9 @@
             <a href="{% url 'home' %}">Home</a>
             <a href="{% url 'login_candidate' %}" class="btn btn-outline">Login</a>
             <a href="{% url 'register_candidate' %}" class="btn btn-primary">Get Started</a>
+            <button class="theme-toggle btn btn-outline" style="padding: 8px 12px; border-radius: 50%;">
+                <i class="fas fa-sun"></i>
+            </button>
         </div>
     </nav>
     <div style="padding: 40px;">
@@ -668,5 +726,56 @@
     {% endif %}
 
     {% block extra_js %}{% endblock %}
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Sidebar Toggle for Mobile
+            const mobileToggle = document.getElementById('mobileToggle');
+            const sidebar = document.getElementById('sidebar');
+            const overlay = document.getElementById('sidebarOverlay');
+            
+            function toggleSidebar() {
+                if (sidebar && overlay) {
+                    sidebar.classList.toggle('open');
+                    overlay.classList.toggle('open');
+                }
+            }
+
+            if (mobileToggle) mobileToggle.addEventListener('click', toggleSidebar);
+            if (overlay) overlay.addEventListener('click', toggleSidebar);
+
+            // Theme Toggle Logic
+            const themeToggles = document.querySelectorAll('.theme-toggle');
+            const htmlElement = document.documentElement;
+            
+            function updateThemeUI(theme) {
+                themeToggles.forEach(btn => {
+                    const icon = btn.querySelector('i');
+                    if (icon) {
+                        if (theme === 'light') {
+                            icon.className = 'fas fa-moon';
+                            icon.style.color = 'var(--indigo)';
+                        } else {
+                            icon.className = 'fas fa-sun';
+                            icon.style.color = 'var(--gold-light)';
+                        }
+                    }
+                });
+            }
+
+            const savedTheme = localStorage.getItem('theme') || 'dark';
+            htmlElement.setAttribute('data-theme', savedTheme);
+            updateThemeUI(savedTheme);
+
+            themeToggles.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const currentTheme = htmlElement.getAttribute('data-theme');
+                    const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+                    htmlElement.setAttribute('data-theme', newTheme);
+                    localStorage.setItem('theme', newTheme);
+                    updateThemeUI(newTheme);
+                });
+            });
+        });
+    </script>
 </body>
 </html>
